@@ -1,13 +1,13 @@
-#' Creates words frequency dataframe for 10-K statement.
+#' Creates words frequency dataframe of 10-K statement.
 #'
-#' \code{GetWordfrquency} creates the word frequency dataframe for 10-K statement.
+#' \code{GetWordfrquency} creates word frequency dataframe of 10-K statement.
 #'
-#' GetWordfrquency function ask the user to locate 10-K statement which can be downloaded using 
-#' \link[edgar]{DownloadFillings} function. Function will clean the text of 10-K statement
-#' and creates words frequency dataframe. This words frequency dataframe will be used
+#' GetWordfrquency function asks the user to locate 10-K statement which can be downloaded using 
+#' \link[edgar]{Downloadfilings} function. Function cleans text of 10-K statement
+#' and creates words frequency dataframe. This words frequency dataframe is used
 #' in the functions \link[edgar]{PositiveWordcloud} and \link[edgar]{NegativeWordcloud}.
 #'  
-#' @return Function will return words frequency dataframe.
+#' @return Function returns words frequency dataframe.
 #'   
 #' @examples
 #' \dontrun{
@@ -25,7 +25,8 @@ GetWordfrquency <- function() {
         
         # Extract text from html file
         doc <- XML::htmlParse(text, asText = TRUE)
-        text <- XML::xpathSApply(doc, "//text()[not(ancestor::script)][not(ancestor::style)][not(ancestor::noscript)][not(ancestor::form)]", XML::xmlValue)
+        text <- XML::xpathSApply(doc, "//text()[not(ancestor::script)][not(ancestor::style)][not(ancestor::noscript)][not(ancestor::form)]", 
+                                 XML::xmlValue)
         text <- paste(text, collapse = " ")
         
         # convert into corpus
@@ -42,6 +43,8 @@ GetWordfrquency <- function() {
         text <- cleantext(text)
         word.frq <- tm::termFreq(text[[1]])
         word.frq <- data.frame(WORD = names(word.frq), FREQUENCY = word.frq, row.names = NULL)
+		
+		# Order dataframe descending on frequency
         word.frq <- word.frq[order(-word.frq$FREQUENCY), ]
         rownames(word.frq) <- NULL
     } else {

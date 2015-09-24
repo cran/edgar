@@ -2,20 +2,20 @@
 % Please edit documentation in R/get_wordfrquency.R
 \name{GetWordfrquency}
 \alias{GetWordfrquency}
-\title{Creates words frequency dataframe for 10-K statement.}
+\title{Creates words frequency dataframe of 10-K statement.}
 \usage{
 GetWordfrquency()
 }
 \value{
-Function will return words frequency dataframe.
+Function returns words frequency dataframe.
 }
 \description{
-\code{GetWordfrquency} creates the word frequency dataframe for 10-K statement.
+\code{GetWordfrquency} creates word frequency dataframe of 10-K statement.
 }
 \details{
-GetWordfrquency function ask the user to locate 10-K statement which can be downloaded using
-\link[edgar]{DownloadFillings} function. Function will clean the text of 10-K statement
-and creates words frequency dataframe. This words frequency dataframe will be used
+GetWordfrquency function asks the user to locate 10-K statement which can be downloaded using
+\link[edgar]{Downloadfilings} function. Function cleans text of 10-K statement
+and creates words frequency dataframe. This words frequency dataframe is used
 in the functions \link[edgar]{PositiveWordcloud} and \link[edgar]{NegativeWordcloud}.
 }
 \examples{

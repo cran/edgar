@@ -21,7 +21,7 @@ Function creates wordcloud of positive words containing in the selected
 PositiveWordcloud function takes words frequency dataframe as an input from
 \link[edgar]{GetWordfrquency} function. It compares the words frequency dataframe
 with the positive words mentioned in the
-'Loughran and McDonald Financial Sentiment Dictionaries'
+Loughran and McDonald's financial sentiment dictionaries
 and generates wordcloud using only positive words with their frequencies.
 }
 \examples{
@@ -31,7 +31,7 @@ PositiveWordcloud(word.frq)
 }
 }
 \references{
-Loughran and McDonald Financial Sentiment Dictionaries
+Loughran and McDonald's financial Sentiment dictionaries
 \url{http://www3.nd.edu/~mcdonald/Word_Lists.html}
 
 Bill McDonald, and Tim Loughran.

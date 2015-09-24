@@ -5,7 +5,7 @@
 #' PositiveWordcloud function takes words frequency dataframe as an input from 
 #' \link[edgar]{GetWordfrquency} function. It compares the words frequency dataframe 
 #' with the positive words mentioned in the 
-#' 'Loughran and McDonald Financial Sentiment Dictionaries'
+#' Loughran and McDonald's financial sentiment dictionaries
 #' and generates wordcloud using only positive words with their frequencies.
 #'  
 #' @param word.frq Word frequency dataframe created using 
@@ -20,7 +20,7 @@
 #' PositiveWordcloud(word.frq)
 #' }
 #' 
-#' @references Loughran and McDonald Financial Sentiment Dictionaries
+#' @references Loughran and McDonald's financial Sentiment dictionaries
 #' \url{http://www3.nd.edu/~mcdonald/Word_Lists.html}
 #' @references Bill McDonald, and Tim Loughran.
 #' Measuring Readability in Financial Disclosures.
@@ -46,12 +46,16 @@ PositiveWordcloud <- function(word.frq) {
     col <- paste0(names(word.frq), collapse = " ")
     
     if (grepl("FREQUENCY", col) && grepl("WORD", col)) {
-		pos.words<-read.csv(system.file("data/poswords.csv", package = "edgar"))
-		pos.words<-pos.words$WORDS
+		# Read positive words dictionary
+        pos.words <- read.csv(system.file("data/poswords.csv", package = "edgar"))
+        pos.words <- pos.words$WORDS
         words <- unlist(word.frq$WORD)
         pos.word.table <- word.frq[words %in% pos.words, ]
-		wordcloud::wordcloud(words = pos.word.table$WORD, freq = pos.word.table$FREQUENCY, scale = c(4, 0.8), 
-				             max.words = Inf, random.order = F, colors = RColorBrewer::brewer.pal(8, "Dark2"))
+		
+		# Creates wordcloud
+        wordcloud::wordcloud(words = pos.word.table$WORD, freq = pos.word.table$FREQUENCY, 
+						     scale = c(4, 0.8), max.words = Inf, random.order = F, 
+                             colors = RColorBrewer::brewer.pal(8, "Dark2"))
         
     } else {
         msg2 <- "Word_frequency dataframe is invalid"

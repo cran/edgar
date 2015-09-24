@@ -1,10 +1,10 @@
 \name{poswords}
 \alias{poswords}
 \docType{data}
-\title{ Positive Words for Textual Analysis of EDGAR Fillings}
+\title{ Positive Words for Textual Analysis of EDGAR Filings}
 \description{
   Dataset contains positive words for Textual Analysis of
-  EDGAR fillings suggested by Loughran and McDonald 
+  EDGAR Filings suggested by Loughran and McDonald 
   Financial Sentiment Dictionaries.
 }
 \format{
