@@ -16,7 +16,7 @@
 #' @param form.type character string containing specific Form-type to be downloaded. 
 #' form.type = 'ALL' if required to download all form-types. 
 #' 
-#' @return Function downloads EDGAR filings from \url{ftp://ftp.sec.gov/edgar} site 
+#' @return Function downloads EDGAR filings from \url{http://edgar.sec.gov/Archives} site 
 #' and returns download status dataframe.
 #'   
 #' @examples

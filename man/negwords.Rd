@@ -1,11 +1,11 @@
 \name{negwords}
 \alias{negwords}
 \docType{data}
-\title{ Negative Words for Textual Analysis of EDGAR Filings}
+\title{ Negative words for sentiment analysis of EDGAR filings}
 \description{
-  Dataset contains negative words for Textual Analysis of
-  EDGAR Filings suggested by Loughran and McDonald 
-  Financial Sentiment Dictionaries.
+  Dataset contains negative words for sentiment analysis of
+  EDGAR filings suggested by Loughran and McDonald's
+  financial sentiment dictionaries.
 }
 \format{
   The format is:

@@ -14,8 +14,9 @@ of 10-K statement.
 \details{
 RunEdgarShiny app has tabs: 'Get Master Index', 'Filings Info', 'Download Filings',
 'Get Daily EDGAR Info', and 'Sentiment Analysis of 10-K'.
-See the directory structure at home page.
-Do not run this app on any browser, the app can only be run on R shiny GUI.
+See the directory structure at home page. App contains pop-up interactive messages,
+it can only be run on R-studio's Viewer pane.
+Do not run this app on any browser.
 }
 \examples{
 \dontrun{

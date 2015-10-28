@@ -2,10 +2,11 @@
 #'
 #' \code{GetWordfrquency} creates word frequency dataframe of 10-K statement.
 #'
-#' GetWordfrquency function asks the user to locate 10-K statement which can be downloaded using 
+#' GetWordfrquency function asks the user to locate 10-K statement which can be download using 
 #' \link[edgar]{Downloadfilings} function. Function cleans text of 10-K statement
 #' and creates words frequency dataframe. This words frequency dataframe is used
-#' in the functions \link[edgar]{PositiveWordcloud} and \link[edgar]{NegativeWordcloud}.
+#' in the functions \link[edgar]{PositiveWordcloud},\link[edgar]{PolarityHist},
+#' \link[edgar]{NegativeWordcloud},\link[edgar]{NegWorsdHist}, and \link[edgar]{PolarityHist}.
 #'  
 #' @return Function returns words frequency dataframe.
 #'   

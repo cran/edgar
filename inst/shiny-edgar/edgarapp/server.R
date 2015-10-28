@@ -43,7 +43,7 @@ shinyServer(function(input, output, session) {
             }
             
             output$master.download.status <- renderTable({
-                withProgress(message = "Downloading Master:", value = 0.01, {
+                withProgress(message = "Downloading Index:", value = 0.01, {
                   GetMasterIndexShiny(year.array)
                 })
             }, escape = FALSE)
@@ -93,8 +93,8 @@ shinyServer(function(input, output, session) {
     output$stat.table.Filing1 <- renderDataTable({
         input$downFilings
         year3 <- isolate(input$year3)
-        cik3 <- isolate(input$cik3)
-        ftype3 <- isolate(input$ftype3)
+        cik3 <- gsub("(^[[:space:]]+|[[:space:]]+$)", "", isolate(input$cik3))
+        ftype3 <- gsub("(^[[:space:]]+|[[:space:]]+$)", "", isolate(input$ftype3))
         
         if (year3 > 0 & cik3 > 0 & ftype3 > 0) {
             withProgress(message = "Please Wait", {
@@ -194,7 +194,7 @@ shinyServer(function(input, output, session) {
                 
                 output$poswordcloud <- renderPlot({
 				   # Wordcloud for positive words
-                  wordcloud::wordcloud(words = pos.word.table$WORD, freq = pos.word.table$FREQUENCY, 
+					wordcloud::wordcloud(words = pos.word.table$WORD, freq = pos.word.table$FREQUENCY, 
 				                       scale = c(4, 0.8), max.words = Inf, 
                                        random.order = F, colors = RColorBrewer::brewer.pal(8, "Dark2"))
                 })
@@ -214,8 +214,6 @@ shinyServer(function(input, output, session) {
 				
 				        
                 output$polarity.hist <- renderPlot({
-				    # Construct polarity dataframe
-
 					# Polarity histogram
 					ggplot2::ggplot(data = polaritydata(), ggplot2::aes(x = Polarity, y = Total_words)) + 
 					ggplot2::geom_bar(fill = c("#FF0000", "#339900"), stat = "identity", width = 0.4, position = ggplot2::position_dodge(width = 0.5)) + 

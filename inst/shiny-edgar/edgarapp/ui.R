@@ -41,7 +41,7 @@ body <- dashboardBody(
 				box(
 					width = 6, status = "primary", solidHeader = TRUE, background = "yellow",
 					title = "Get Yearly EDGAR Filing Information",            
-							selectInput("year.getinfo", "Select Year:",choices = tableyr, selected = NULL),
+							selectInput("year.getinfo", "Select Year:",choices = c("",tableyr), selected = NULL),
 				    actionButton("getinfo", "Get Info")
 				),
 				box(

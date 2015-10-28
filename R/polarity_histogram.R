@@ -30,49 +30,50 @@
 #' Journal of Finance: Volume 66, Issue 1, February 2011
 
 PolarityHist <- function(word.frq) {
+  
+  if (!is.data.frame(word.frq)) {
+    msg1 <- "Word_frequency is not a dataframe"
+    err <- tcltk::tkmessageBox(message = msg1, icon = "error")
+    stop(msg1)
+  }
+  
+  if (nrow(word.frq) == 0) {
+    msg2 <- "Word_frequency dataframe is empty"
+    err <- tcltk::tkmessageBox(message = msg2, icon = "error")
+    stop(msg2)
+  }
+  col <- paste0(names(word.frq), collapse = " ")
+  
+  if (grepl("FREQUENCY", col) && grepl("WORD", col)) {
+    words <- unlist(word.frq$WORD)
+    # read negative dictionary
+    neg.words <- utils::read.csv(system.file("data/negwords.csv", package = "edgar"))
+    neg.words <- neg.words$WORDS
+    neg.word.table <- word.frq[words %in% neg.words, ]
     
-    if (!is.data.frame(word.frq)) {
-        msg1 <- "Word_frequency is not a dataframe"
-        err <- tcltk::tkmessageBox(message = msg1, icon = "error")
-        stop(msg1)
-    }
+    # read positive dictionary
+    pos.words <- utils::read.csv(system.file("data/poswords.csv", package = "edgar"))
+    pos.words <- pos.words$WORDS
+    pos.word.table <- word.frq[words %in% pos.words, ]
     
-    if (nrow(word.frq) == 0) {
-        msg2 <- "Word_frequency dataframe is empty"
-        err <- tcltk::tkmessageBox(message = msg2, icon = "error")
-        stop(msg2)
-    }
-    col <- paste0(names(word.frq), collapse = " ")
+    polaritydata <- data.frame(Polarity = c("Negative", "Positive"), 
+            Total_words = c(sum(neg.word.table$FREQUENCY), sum(pos.word.table$FREQUENCY))) 
     
-    if (grepl("FREQUENCY", col) && grepl("WORD", col)) {
-        words <- unlist(word.frq$WORD)
-        # read negative dictionary
-        neg.words <- utils::read.csv(system.file("data/negwords.csv", package = "edgar"))
-        neg.words <- neg.words$WORDS
-        neg.word.table <- word.frq[words %in% neg.words, ]
-        
-        # read positive dictionary
-        pos.words <- utils::read.csv(system.file("data/poswords.csv", package = "edgar"))
-        pos.words <- pos.words$WORDS
-        pos.word.table <- word.frq[words %in% pos.words, ]
-        
-        res <- data.frame(Polarity = c("Negative", "Positive"), Total_words = c(sum(neg.word.table$FREQUENCY), sum(pos.word.table$FREQUENCY)))
-		
-		# Creates polarity histogram
-        ggplot2::ggplot(data = res, ggplot2::aes(x = res$Polarity, y = res$Total_words)) + 
-		ggplot2::geom_bar(fill = c("#FF0000", "#339900"), stat = "identity", width = 0.4, position = ggplot2::position_dodge(width = 0.5)) + 
-		ggplot2::theme(axis.text.x = ggplot2::element_text(hjust = 0.5)) + 
-		ggplot2::theme(axis.text = ggplot2::element_text(size = 14, face = "bold"), axis.title = ggplot2::element_text(size = 16, face = "bold")) + 
-		ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white", colour = "black")) + 
-		ggplot2::xlab("Polarity") + 
-		ggplot2::ylab("Frequency") + 
-		ggplot2::ggtitle("Polarity Histogram") + 
-		ggplot2::theme(plot.title = ggplot2::element_text(lineheight = 3, face = "bold", color = "black", size = 18))
-        
-    } else {
-        msg2 <- "Word_frequency dataframe is invalid"
-        err <- tcltk::tkmessageBox(message = msg2, icon = "error")
-        stop(msg2)
-    }
-    
-} 
+    # Creates polarity histogram
+    with(polaritydata,{
+    ggplot2::ggplot(data = polaritydata, ggplot2::aes(x = Polarity, y = Total_words)) + 
+    ggplot2::geom_bar(fill = c("#FF0000", "#339900"), stat = "identity", width = 0.4, position = ggplot2::position_dodge(width = 0.5)) + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(hjust = 0.5)) + 
+    ggplot2::theme(axis.text = ggplot2::element_text(size = 14, face = "bold"), axis.title = ggplot2::element_text(size = 16, face = "bold")) + 
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white", colour = "black")) + 
+    ggplot2::xlab("Polarity") + 
+    ggplot2::ylab("Frequency") + 
+    ggplot2::theme(plot.title = ggplot2::element_text(lineheight = 3, face = "bold", color = "black", size = 18))
+    })
+  } else {
+    msg2 <- "Word_frequency dataframe is invalid"
+    err <- tcltk::tkmessageBox(message = msg2, icon = "error")
+    stop(msg2)
+  }
+  
+}

@@ -34,6 +34,12 @@ GetMasterIndexShiny <- function(year.array) {
                 # Unzip gz file
                 R.utils::gunzip(dfile, destname = file, temporary = FALSE, skip = FALSE, overwrite = TRUE, remove = TRUE)
                 cat("Successfully downloaded Quarter Master File", file, " for year:", year, "and quarter:", quarter, "...")
+                
+                # Removing "'" so that scan with "|" not fail due to occurrence of "'" in company name
+                data <- gsub("'", "", readLines(file))
+                # writting back to storage
+                writeLines(data, file)
+                
                 d <- scan(file, what = list("", "", "", "", ""), flush = F, skip = 10, sep = "|")
                 data <- data.frame(CIK = d[[1]], COMPANY_NAME = d[[2]], FORM_TYPE = d[[3]], DATE_FILED = d[[4]], EDGAR_LINK = d[[5]], QUARTER = quarter)
                 year.master <- rbind(year.master, data)
@@ -85,7 +91,7 @@ CreateLinkShiny <- function(d) {
     links <- (d$EDGAR_LINK)
     links <- gsub(".txt", "-index.htm", links)
     d$SELECT <- sprintf("<a href=\"%s\">%s</a>", paste0("http://www.sec.gov/Archives/", links), "VIEW")
-    d$EDGAR_LINK <- NULL  # Remove edgard links 
+    d$EDGAR_LINK <- NULL  # Remove edgar links 
     return(d)
 }
 
@@ -220,6 +226,12 @@ GetDailyInfoShiny <- function(day, month, year) {
     }
     
     if (down.success) {
+	
+	    # Removing "'" so that scan with "|" not fail due to occurrence of "'" in company name
+        temp.data <- gsub("'", "", readLines(filename))
+        # writting back to storage
+        writeLines(temp.data, filename)
+		
         d <- scan(filename, what = list("", "", "", "", ""), flush = F, skip = 10, sep = "|")
         data <- data.frame(CIK = d[[1]], COMPANY_NAME = d[[2]], FORM_TYPE = d[[3]], 
 						   DATE_FILED = paste0(year, "-", month, "-", day), EDGAR_LINK = d[[5]])
