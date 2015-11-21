@@ -1,9 +1,9 @@
-#' Retrieves EDGAR filings from SEC.org site.
+#' Retrieves EDGAR filings from SEC site.
 #'
-#' \code{Downloadfilings} retrieves EDGAR filings for the specified CIK, form-type,
+#' \code{DownloadFilings} retrieves EDGAR filings for the specified CIK, form-type,
 #' and year mentioned in function parameters.
 #'
-#' Downloadfilings function takes year, form_type, and CIK as an input. It asks the
+#' DownloadFilings function takes year, form_type, and CIK as an input. It asks the
 #' user to locate working directory. Working directory should contain 'Master Index' 
 #' directory which contains master Rda files for specific years downloaded using 
 #' \link[edgar]{DownloadMasterIndex} function. Function creates new directory 'Edgar filings'  
@@ -22,17 +22,17 @@
 #' @examples
 #' \dontrun{
 #' 
-#' rep <- Downloadfilings(1994, 100030, 'ALL') 
+#' rep <- DownloadFilings(1994, 100030, 'ALL') 
 #' ## download all filings filed by the firm with CIK=100030 in the year 1994. 
 #' ## Generates download report in dataframe.
 #' 
-#' rep <- Downloadfilings(2006, 1000180, '10-K')
+#' rep <- DownloadFilings(2006, 1000180, '10-K')
 #' ## download '10-K' filings filed by the firm with CIK=1000180 in the year 2006. 
 #' ## Generates download report in dataframe.
 #' }
 #' 
 
-Downloadfilings <- function(year, cik.no, form.type) {
+DownloadFilings <- function(year, cik.no, form.type) {
     
     # function to download file and return FALSE if download error
     DownloadFile <- function(link, filename) {

@@ -1,9 +1,9 @@
 #' Creates histogram of most frequent negative words in 10-K statement.
 #'
-#' \code{NegWorsdHist} creates histogram of most frequent 
+#' \code{NegWordsHist} creates histogram of most frequent 
 #' negative words in 10-K statement.
 #'
-#' NegWorsdHist function takes words frequency dataframe as an input from 
+#' NegWordsHist function takes words frequency dataframe as an input from 
 #' \link[edgar]{GetWordfrquency} function. It compares this words 
 #' frequency dataframe with negative words mentioned in the 
 #' Loughran and McDonald's financial sentiment dictionaries
@@ -18,7 +18,7 @@
 #' @examples
 #' \dontrun{
 #' 
-#' NegWorsdHist(word.frq)
+#' NegWordsHist(word.frq)
 #' }
 #' 
 #' @references Loughran and McDonald's financial Sentiment dictionaries
@@ -30,7 +30,7 @@
 #' When Is a Liability Not a Liability? Textual Analysis, Dictionaries, and 10-Ks.
 #' Journal of Finance: Volume 66, Issue 1, February 2011
 
-NegWorsdHist <- function(word.frq) {
+NegWordsHist <- function(word.frq) {
     
     if (!is.data.frame(word.frq)) {
         msg1 <- "Word_frequency is not a dataframe"

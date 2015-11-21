@@ -1,6 +1,6 @@
 #' Retrieves quarterly Master Index.
 #'
-#' \code{DownloadMasterIndex} retrieves the quarterly Master Index from SEC.org site.
+#' \code{DownloadMasterIndex} retrieves the quarterly Master Index from SEC site.
 #'
 #' DownloadMasterIndex function takes 'year' as an input parameter from user,  
 #' asks the user to locate working directory, download quarterly master index

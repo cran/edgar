@@ -15,7 +15,7 @@ Function retrieves quarterly Master Index files
 from \url{ftp://ftp.sec.gov/edgar} site and returns download status dataframe.
 }
 \description{
-\code{DownloadMasterIndex} retrieves the quarterly Master Index from SEC.org site.
+\code{DownloadMasterIndex} retrieves the quarterly Master Index from SEC site.
 }
 \details{
 DownloadMasterIndex function takes 'year' as an input parameter from user,
