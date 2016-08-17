@@ -1,7 +1,7 @@
 \name{negwords}
 \alias{negwords}
 \docType{data}
-\title{ Negative words for sentiment analysis of EDGAR filings}
+\title{ Dictionary of negative words}
 \description{
   Dataset contains negative words for sentiment analysis of
   EDGAR filings suggested by Loughran and McDonald's

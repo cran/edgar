@@ -1,15 +1,26 @@
 Package: edgar
 Type: Package
 Title: Platform for EDGAR Filing Management
-Version: 1.0.4
-Date: 2015-11-21
-Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil <bharatspatil@gmail.com>
+Version: 1.0.5
+Date: 2016-08-15
+Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil
+    <bharatspatil@gmail.com>
 Maintainer: Gunratan Lonare <lonare.gunratan@gmail.com>
-Depends: R (>= 3.1),shiny, shinydashboard, rChoiceDialogs
-Imports: R.utils,tcltk,tm,XML,wordcloud,RColorBrewer,ggplot2
-Description: EDGAR is the Electronic Data Gathering, Analysis, and Retrieval system which performs automated collection, validation, indexing, acceptance, and forwarding of submissions by companies and others who are required by law to file forms with the U.S. Securities and Exchange Commission (SEC). This package downloads EDGAR quarterly master index, daily master index, filings from SEC.org site and do sentiment analysis of 10-K statements.
+Depends: R (>= 3.1)
+Imports: R.utils,tm,XML,wordcloud,RColorBrewer,ggplot2
+Description: In the USA, firms file different forms with the U.S. Securities and
+    Exchange Commission (SEC) through EDGAR (Electronic Data Gathering, Analysis,
+    and Retrieval system). EDGAR automated system collects all the different
+    necessary filings and make it publicly available. Secondly, it validates
+    collected filings, then perform indexing and accepting of these submitted
+    forms. Investors, regulators, and researchers often require these forms for
+    various purposes. "edgar" R package helps various individuals in data gathering,
+    management, and visualization. This package downloads SEC EDGAR quarterly master
+    index, daily master index, filings from SEC.org site and perform sentiment
+    analysis of filing.
 License: GPL-2
-Packaged: 2015-11-21 09:14:53 UTC; Gunratan
+RoxygenNote: 5.0.1
 NeedsCompilation: no
+Packaged: 2016-08-17 03:42:21 UTC; gunratan
 Repository: CRAN
-Date/Publication: 2015-11-21 15:56:17
+Date/Publication: 2016-08-17 10:40:30

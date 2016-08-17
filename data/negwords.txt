@@ -1,4 +1,3 @@
-WORDS
 abandon
 abandoned
 abandoning
@@ -991,7 +990,7 @@ fails
 failure
 failures
 fallout
-FALSE
+false
 falsely
 falsification
 falsifications

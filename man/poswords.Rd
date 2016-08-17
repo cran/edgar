@@ -1,7 +1,7 @@
 \name{poswords}
 \alias{poswords}
 \docType{data}
-\title{ Positive words for sentiment analysis of EDGAR filings}
+\title{ Dictionary of positive words}
 \description{
   Dataset contains positive words for sentiment analysis of
   EDGAR filings suggested by Loughran and McDonald's 
