@@ -33,7 +33,7 @@ report <- getMasterIndex(1995)
 ## Download quarterly master index files for the year 1990 and stores into yearly  
 ## 1995master.Rda file. It returns download report in data frame format.
 
-report <- getMasterIndex(c(1994, 1995, 2006)) 
+report <- getMasterIndex(c(1994, 2006, 2014)) 
 ## Download quarterly master index files for the years 1994, 1995, 2006 and stores into 
 ## different {year}master.Rda files. It returns download report in data frame format.
 }

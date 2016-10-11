@@ -25,7 +25,7 @@ in \link[edgar]{getWordcloud}, \link[edgar]{getWordHistogram}, and
 \examples{
 \dontrun{
 
-word.frq <- getWordfrquency('Edgar Filings/100240_10-K_1994/100240_10-K_1994-03-31.txt')
+word.frq <- getWordfrquency('Edgar Filings/1000180_10-K_2006/1000180_10-K_2006-03-15.txt')
 }
 }
 

@@ -1,8 +1,8 @@
 Package: edgar
 Type: Package
 Title: Platform for EDGAR Filing Management
-Version: 1.0.5
-Date: 2016-08-15
+Version: 1.0.6
+Date: 2016-10-10
 Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil
     <bharatspatil@gmail.com>
 Maintainer: Gunratan Lonare <lonare.gunratan@gmail.com>
@@ -14,13 +14,13 @@ Description: In the USA, firms file different forms with the U.S. Securities and
     necessary filings and make it publicly available. Secondly, it validates
     collected filings, then perform indexing and accepting of these submitted
     forms. Investors, regulators, and researchers often require these forms for
-    various purposes. "edgar" R package helps various individuals in data gathering,
-    management, and visualization. This package downloads SEC EDGAR quarterly master
-    index, daily master index, filings from SEC.org site and perform sentiment
-    analysis of filing.
+    various purposes. This package helps in data gathering, management, and 
+	visualization in this regard. It downloads SEC EDGAR quarterly master
+    indexes, daily master indexes, and filings from SEC.org site and perform 
+    sentiment analysis of these filing.
 License: GPL-2
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-08-17 03:42:21 UTC; gunratan
+Packaged: 2016-10-10 23:39:35 UTC; gunratan
 Repository: CRAN
-Date/Publication: 2016-08-17 10:40:30
+Date/Publication: 2016-10-11 01:45:50

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mergeCompustat.R
 \name{mergeCompustat}
 \alias{mergeCompustat}
-\title{Connect sentiment count of multiple cik's 10-K filing with compustat data.}
+\title{Connect sentiment count of multiple cik's 10-K filing with Compustat data.}
 \usage{
 mergeCompustat (cik.no, filing.yr, words.list, compustat.data)
 }
@@ -13,38 +13,40 @@ mergeCompustat (cik.no, filing.yr, words.list, compustat.data)
 
 \item{words.list}{sentiment dictionary in list format.}
 
-\item{compustat.data}{compustat data frame.}
+\item{compustat.data}{Compustat data frame.}
 }
 \value{
 Compustat data with sentiment.count column for desired cik and filing year.
 }
 \description{
-\code{mergeCompustat} merge sentiment count of 10-K filing with compustat data.
+\code{mergeCompustat} merge sentiment count of 10-K filing with Compustat data.
 }
 \details{
 mergeCompustat function takes cik number, filing year, sentiment dictionary, and  
-compustat data. It download and parse 10-K filing for desired cik and filing year  
-present in input compustat dataset. It count sentiment words present in defined 10-K 
-and append to compustat data frame. Working directory must contain 'Master Index' 
+Compustat data. It download and parse 10-K filing for desired cik and filing year  
+present in input Compustat dataset. It count sentiment words present in defined 10-K 
+and append to Compustat data frame. Working directory must contain 'Master Index' 
 directory which contains master Rda files for specified filing year. This master index
-can be downloaded using \link[edgar]{getMasterIndex} function.
+can be downloaded using \link[edgar]{getMasterIndex} function. Please note that,
+Compustat data must contains 'cik' column, and  'datadate' column in 'mm/dd/yyyy' format.
 }
 \examples{
 \dontrun{
 
+## User needs to input Compustat data in data frame format.
 compustat.data <- read.csv('compustat_data.csv')
-## User needs to input compustat data in data frame format.
 
-words.list <- scan(system.file('data/negwords.txt', package = 'edgar'), what='character')
-## USer can apply any desired user defined dictionary other than 
-## default dictionaries from this package.
+## User can apply any desired user defined dictionary 
+## other than default dictionaries from this package.
+words.list <- scan(system.file('data/negwords.txt', package = 'edgar') 
+                   , what='character')
 
 ## For single cik
-res <- mergeCompustat <- function( 2098, 2014, words.list, compustat.data)
+res <- mergeCompustat( 2098, 2014, words.list, compustat.data)
 
-# User can provide list of different CIK's.
+## User can provide list of different CIK's.
 cik.no <- c(1750,6201,2098)
-res <- mergeCompustat <- function( cik.no, 2014, words.list, compustat.data)
+res <- mergeCompustat( cik.no, 2014, words.list, compustat.data)
  
 }
 
