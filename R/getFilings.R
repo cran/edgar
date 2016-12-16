@@ -102,7 +102,7 @@ getFilings <- function(year, cik.no, form.type) {
         dir.create(new.dir)
         
         for (i in 1:total.files) {
-          LINK <- paste0("http://edgar.sec.gov/Archives/", 
+          LINK <- paste0("https://www.sec.gov/Archives/", 
           year.master$EDGAR_LINK[i])
           f.type <- gsub("/", "", year.master$FORM_TYPE[i])
           dest.filename <- paste0(new.dir, "/", year.master$CIK[i], 

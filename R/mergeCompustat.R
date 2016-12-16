@@ -131,7 +131,7 @@ mergeCompustat <- function(cik.no, filing.yr, words.list, compustat.data) {
   
   for (i in 1:nrow(temp.data)) {
     # Create link to downlaod 10-K filing
-    LINK <- paste0("http://edgar.sec.gov/Archives/", temp.data$edgar.link[i])
+    LINK <- paste0("https://www.sec.gov/Archives/", temp.data$edgar.link[i])
     res <- DownloadFile(LINK, dest.filename)
     
     if (res == FALSE) {
