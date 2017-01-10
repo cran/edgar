@@ -1,8 +1,8 @@
 Package: edgar
 Type: Package
 Title: Platform for EDGAR Filing Management
-Version: 1.0.7
-Date: 2016-11-15
+Version: 1.0.8
+Date: 2017-01-09
 Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil
     <bharatspatil@gmail.com>
 Maintainer: Gunratan Lonare <lonare.gunratan@gmail.com>
@@ -21,6 +21,6 @@ Description: In the USA, firms file different forms with the U.S. Securities and
 License: GPL-2
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-11-29 03:06:10 UTC; ABC
+Packaged: 2017-01-10 02:49:23 UTC; ABC
 Repository: CRAN
-Date/Publication: 2016-12-16 08:33:54
+Date/Publication: 2017-01-10 10:17:40

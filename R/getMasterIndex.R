@@ -3,7 +3,7 @@
 #' \code{getMasterIndex} retrieves the quarterly master index from US SEC site.
 #'
 #' getMasterIndex function takes filing year as an input parameter from user,  
-#' download quarterly master index from ftp://ftp.sec.gov/edgar/full-index.
+#' download quarterly master index from https://www.sec.gov/Archives/edgar/full-index/.
 #' It strips the headers, converts into data frame, and merges such quarterly
 #' data frames into yearly data frames and stored it in Rda format.
 #' Function creates new directory 'Master Index' into working directory 
@@ -16,7 +16,7 @@
 #' index are to be downloaded.
 #' 
 #' @return Function retrieves quarterly master index files 
-#' from \url{ftp://ftp.sec.gov/edgar/full-index} site and returns download status data frame.
+#' from \url{https://www.sec.gov/Archives/edgar/full-index/} site and returns download status data frame.
 #'   
 #' @examples
 #' \dontrun{
@@ -71,7 +71,7 @@ getMasterIndex <- function(year.array) {
         "master")
       
       # form a link to download master file
-      link <- paste0("ftp://ftp.sec.gov/edgar/full-index/", 
+      link <- paste0("https://www.sec.gov/Archives/edgar/full-index/", 
         year, "/QTR", quarter, "/master.gz")
       
       res <- DownloadFile(link, dfile)
@@ -85,11 +85,15 @@ getMasterIndex <- function(year.array) {
         # Removing ''' so that scan with '|' not fail due to
         # occurrence of ''' in company name
         data <- gsub("'", "", readLines(file))
+        
+        # Find line number where header description ends
+        header.end <- grep("--------------------------------------------------------", data)
+        
         # writting back to storage
         writeLines(data, file)
         
         d <- scan(file, what = list("", "", "", "", ""), 
-          flush = F, skip = 10, sep = "|", quiet = T)
+          flush = F, skip = header.end, sep = "|", quiet = T)
         
         # Remove punctuation characters from company names
         COMPANY_NAME <- gsub("[[:punct:]]", " ", d[[2]], 

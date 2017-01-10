@@ -12,14 +12,14 @@ index are to be downloaded.}
 }
 \value{
 Function retrieves quarterly master index files 
-from \url{ftp://ftp.sec.gov/edgar/full-index} site and returns download status data frame.
+from \url{https://www.sec.gov/Archives/edgar/full-index/} site and returns download status data frame.
 }
 \description{
 \code{getMasterIndex} retrieves the quarterly master index from US SEC site.
 }
 \details{
 getMasterIndex function takes filing year as an input parameter from user,  
-download quarterly master index from ftp://ftp.sec.gov/edgar/full-index.
+download quarterly master index from https://www.sec.gov/Archives/edgar/full-index/.
 It strips the headers, converts into data frame, and merges such quarterly
 data frames into yearly data frames and stored it in Rda format.
 Function creates new directory 'Master Index' into working directory 

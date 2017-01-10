@@ -3,7 +3,7 @@
 #' \code{getDailyMaster} retrieves daily master index from US SEC site.
 #'
 #' getDailyMaster function takes date as an input parameter from user,  
-#' download master index for that particular date from ftp://ftp.sec.gov/edgar/daily-index
+#' download master index for that particular date from https://www.sec.gov/Archives/edgar/daily-index/
 #' site. It strips headers and convert this daily filing information in data frame format.
 #' Function creates new directory 'Daily Index' into working directory 
 #' to save these downloaded daily master index files.
@@ -57,15 +57,15 @@ getDailyMaster <- function(input.date) {
     
     date <- paste0(year, month, day)
     filename <- paste0("Daily Index/daily_idx_", date)
-    link1 <- paste0("ftp://ftp.sec.gov/edgar/daily-index/master.", 
+    link1 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/master.", 
       date, ".idx")
-    link2 <- paste0("ftp://ftp.sec.gov/edgar/daily-index/", 
+    link2 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/", 
       year, "/QTR", ceiling(as.integer(month)/3), "/master.", 
-      date, ".idx.gz")
-    link3 <- paste0("ftp://ftp.sec.gov/edgar/daily-index/", 
+      date, ".idx")
+    link3 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/", 
       year, "/QTR", ceiling(as.integer(month)/3), "/master.", 
       substr(as.character(year), 3, 4), month, day, ".idx")
-    link4 <- paste0("ftp://ftp.sec.gov/edgar/daily-index/", 
+    link4 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/", 
       year, "/QTR", ceiling(as.integer(month)/3), "/master.", 
       date, ".idx")
     down.success = FALSE
@@ -104,8 +104,11 @@ getDailyMaster <- function(input.date) {
       # writting back to storage
       writeLines(temp.data, filename)
       
+      # Find line number where header description ends
+      header.end <- grep("--------------------------------------------------------", temp.data)
+      
       d <- scan(filename, what = list("", "", "", "", ""), 
-        flush = F, skip = 7, sep = "|", quiet = T)
+        flush = F, skip = header.end, sep = "|", quiet = T)
       data <- data.frame(CIK = d[[1]], COMPANY_NAME = d[[2]], 
         FORM_TYPE = d[[3]], DATE_FILED = d[[4]], EDGAR_LINK = d[[5]])
       data$DATE_FILED <- NULL

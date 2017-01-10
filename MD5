@@ -1,9 +1,9 @@
-1e29919cc502f1a1915b8d3e1b135802 *DESCRIPTION
+6b81f81848676d1ded64bcfebf1c062c *DESCRIPTION
 22a7b7c4fc1cd1ea71ba01cf5db9891c *NAMESPACE
-1eda45b65bcad1863f7e29f20f927cce *R/getDailyMaster.R
+8b87a876037f00430ce948fe96e2b159 *R/getDailyMaster.R
 ac0d2699607fc9dac7fd22c94bd56f0e *R/getFilingInfo.R
 625128ac73ced885c1a798206e0a2993 *R/getFilings.R
-7d2d50618f6020c7f9e3217f89c9e194 *R/getMasterIndex.R
+f138789ff924d8dc17b793c3779b7536 *R/getMasterIndex.R
 8fed67829a9560e62681cdb9d1f49d56 *R/getSentimentCount.R
 b77fb936d7ea311f867eb68884bda6b3 *R/getWordHistogram.R
 0630bf8f4f0f6bc93b071569dcaa8cc7 *R/getWordcloud.R
@@ -11,10 +11,10 @@ b77fb936d7ea311f867eb68884bda6b3 *R/getWordHistogram.R
 1385e3c3299cd12c7d70ae92f554998d *R/mergeCompustat.R
 78844bad5d50892b7aacef45315186c6 *data/negwords.txt.gz
 b328e852ff64c1c6f47b5080a62da53e *data/poswords.txt.gz
-5c7bd33d47804fa731e158317a301e65 *man/getDailyMaster.Rd
+6db013109868fb9d5717714f3aef54a2 *man/getDailyMaster.Rd
 824101903065be110165eba6ff414182 *man/getFilingInfo.Rd
 dbb5b80a6123e7305c53d3992e58c8d1 *man/getFilings.Rd
-5cae830bc59a69744c6c321ce8ab53a5 *man/getMasterIndex.Rd
+88b942b30d7c4d39b5eaf58fe3d4a9e6 *man/getMasterIndex.Rd
 520ee3776287cc520bdafc21a914c270 *man/getSentimentCount.Rd
 93c1054eb2913280e76381c38d13d363 *man/getWordHistogram.Rd
 cfe335cab0e20f3e09694c62a9651023 *man/getWordcloud.Rd
