@@ -2,13 +2,13 @@
 #'
 #' \code{getWordcloud} creates wordcloud of words from filing.
 #'
-#' getWordcloud function takes words frequency data frame as an input from 
-#' \link[edgar]{getWordfrquency} function. It compares this words frequency data frame 
+#' getWordcloud function takes words frequency dataframe as an input from 
+#' \link[edgar]{getWordfrquency} function. It compares these words 
 #' with the input dictionary and generates wordcloud using match words.
 #'  
 #' @usage getWordcloud(word.frq, words.list)
 #'  
-#' @param word.frq Word frequency data frame created using 
+#' @param word.frq Word frequency dataframe created using 
 #' \link[edgar]{getWordfrquency} function.
 #' @param words.list Word list as a sentiment dictionary.
 #' 
@@ -28,13 +28,13 @@
 getWordcloud <- function(word.frq, words.list) {
   
   if (!is.data.frame(word.frq)) {
-    msg1 <- "word.frq is not a data frame"
+    msg1 <- "word.frq is not a valid dataframe"
     cat(msg1)
     return()
   }
   
   if (nrow(word.frq) == 0) {
-    msg2 <- "word.frq data frame is empty"
+    msg2 <- "word.frq dataframe is empty"
     cat(msg2)
     return()
   }
@@ -51,7 +51,7 @@ getWordcloud <- function(word.frq, words.list) {
       scale = c(4, 0.8), max.words = Inf, random.order = F, 
       colors = RColorBrewer::brewer.pal(8, "Dark2"))
   } else {
-    msg3 <- "word.frq data frame is invalid"
+    msg3 <- "word.frq dataframe is invalid"
     cat(msg3)
     return()
   }

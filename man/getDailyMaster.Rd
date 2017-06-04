@@ -18,7 +18,7 @@ Function returns filing information for the input date.
 \details{
 getDailyMaster function takes date as an input parameter from user,  
 download master index for that particular date from https://www.sec.gov/Archives/edgar/daily-index/
-site. It strips headers and convert this daily filing information in data frame format.
+site. It strips headers and converts this daily filing information in dataframe format.
 Function creates new directory 'Daily Index' into working directory 
 to save these downloaded daily master index files.
 }
@@ -28,4 +28,3 @@ to save these downloaded daily master index files.
 daily.filing.info <- getDailyMaster('08/09/2016')
 } 
 }
-

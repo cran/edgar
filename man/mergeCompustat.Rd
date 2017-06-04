@@ -13,7 +13,7 @@ mergeCompustat (cik.no, filing.yr, words.list, compustat.data)
 
 \item{words.list}{sentiment dictionary in list format.}
 
-\item{compustat.data}{Compustat data frame.}
+\item{compustat.data}{Compustat dataframe.}
 }
 \value{
 Compustat data with sentiment.count column for desired cik and filing year.
@@ -23,17 +23,19 @@ Compustat data with sentiment.count column for desired cik and filing year.
 }
 \details{
 mergeCompustat function takes cik number, filing year, sentiment dictionary, and  
-Compustat data. It download and parse 10-K filing for desired cik and filing year  
-present in input Compustat dataset. It count sentiment words present in defined 10-K 
-and append to Compustat data frame. Working directory must contain 'Master Index' 
-directory which contains master Rda files for specified filing year. This master index
-can be downloaded using \link[edgar]{getMasterIndex} function. Please note that,
-Compustat data must contains 'cik' column, and  'datadate' column in 'mm/dd/yyyy' format.
+Compustat data. It downloads 10-K filings for desired cik and filing year  
+present in an input Compustat dataset in new directory "Edgar filings/Compustat filings".
+The function also counts sentiment words from 10-K's and append those counts with new 
+column named "sentiment.count" to Compustat dataframe. Working directory must contain 
+'Master Index' directory which contains master Rda files for specified filing year. 
+This master index can be downloaded using \link[edgar]{getMasterIndex} function. 
+Please note that Compustat data must contains 'cik' column, and  'datadate' 
+column in 'mm/dd/yyyy' format.
 }
 \examples{
 \dontrun{
 
-## User needs to input Compustat data in data frame format.
+## User needs to input Compustat data in dataframe format.
 compustat.data <- read.csv('compustat_data.csv')
 
 ## User can apply any desired user defined dictionary 
@@ -51,4 +53,3 @@ res <- mergeCompustat( cik.no, 2014, words.list, compustat.data)
 }
 
 }
-

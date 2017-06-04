@@ -16,16 +16,16 @@ to be downloaded. cik.no = 'ALL' if required to download for all CIK's.}
 form.type = 'ALL' if required to download all form-types.}
 }
 \value{
-Function downloads EDGAR filings and returns download status data frame.
+Function downloads EDGAR filings and returns download status in dataframe.
 }
 \description{
-\code{getFilings} retrieves EDGAR filings for the specified CIK, form type,
+\code{getFilings} retrieves EDGAR filings for the specified CIK, form-type,
 and year mentioned in function parameters.
 }
 \details{
-getFilings function takes year, form type, and CIK as an input.
-Working directory should contain 'Master Index' 
-directory which contains master Rda files for specific years downloaded using 
+getFilings function takes year, form-type, and CIK as an input.
+Working directory must contains master index (in Rda) files for input year which can be 
+downloaded using 
 \link[edgar]{getMasterIndex} function. Function creates new directory 'Edgar filings'  
 to store all downloaded filings. Please note, for all other functions in this 
 package needs to locate the same working directory.
@@ -35,12 +35,11 @@ package needs to locate the same working directory.
 
 report <- getFilings(1994, 100030, 'ALL') 
 ## download all filings filed by the firm with CIK=100030 in the year 1994. 
-## Generates download report in data frame.
+## Generates download report in dataframe.
 
 report <- getFilings(2006, 1000180, '10-K')
 ## download '10-K' filings filed by the firm with CIK=1000180 in the year 2006. 
-## Generates download report in data frame.
+## Generates download report in dataframe.
 }
 
 }
-

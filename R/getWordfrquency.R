@@ -1,10 +1,10 @@
-#' Creates words frequency data frame from EDGAR filing.
+#' Creates words frequency dataframe from EDGAR filing.
 #'
-#' \code{getWordfrquency} creates word frequency data frame using filing text.
+#' \code{getWordfrquency} creates word frequency dataframe using filing text.
 #'
-#' getWordfrquency function takes path of filing which can be download using 
+#' getWordfrquency function takes path of filing which can be downloaded using 
 #' \link[edgar]{getFilings} function. Function cleans text from filing
-#' and creates words frequency data frame. This data frame is used
+#' and creates words frequency dataframe. This dataframe is used
 #' in \link[edgar]{getWordcloud}, \link[edgar]{getWordHistogram}, and 
 #' \link[edgar]{getSentimentCount} functions.
 #'  
@@ -12,7 +12,7 @@
 #'
 #' @param filepath Path of downloaded filing.
 #'  
-#' @return Function returns words frequency data frame.
+#' @return Function returns words frequency dataframe.
 #'   
 #' @examples
 #' \dontrun{
@@ -59,7 +59,7 @@ getWordfrquency <- function(filepath) {
       word.frq <- data.frame(WORD = row.names(wordMatrix), 
         FREQUENCY = wordMatrix[, 1], row.names = NULL)
       
-      # Order data frame descending on frequency
+      # Order dataframe descending on frequency
       word.frq <- word.frq[order(-word.frq$FREQUENCY), 
         ]
       rownames(word.frq) <- NULL

@@ -4,8 +4,8 @@
 #'
 #' getMasterIndex function takes filing year as an input parameter from user,  
 #' download quarterly master index from https://www.sec.gov/Archives/edgar/full-index/.
-#' It strips the headers, converts into data frame, and merges such quarterly
-#' data frames into yearly data frames and stored it in Rda format.
+#' It strips the headers, converts into dataframe, and merges such quarterly
+#' dataframes into yearly dataframes and stored it in Rda format.
 #' Function creates new directory 'Master Index' into working directory 
 #' to save these Rda Master Index. Please note, for all other functions in this 
 #' package needs to locate the same working directory to access these Rda master index files.  
@@ -16,18 +16,18 @@
 #' index are to be downloaded.
 #' 
 #' @return Function retrieves quarterly master index files 
-#' from \url{https://www.sec.gov/Archives/edgar/full-index/} site and returns download status data frame.
+#' from \url{https://www.sec.gov/Archives/edgar/full-index/} site and returns download status dataframe.
 #'   
 #' @examples
 #' \dontrun{
 #' 
 #' report <- getMasterIndex(1995) 
-#' ## Download quarterly master index files for the year 1990 and stores into yearly  
-#' ## 1995master.Rda file. It returns download report in data frame format.
+#' ## Downloads quarterly master index files for the year 1995 and stores into yearly  
+#' ## 1995master.Rda file. It returns download report in dataframe format.
 #' 
 #' report <- getMasterIndex(c(1994, 2006, 2014)) 
 #' ## Download quarterly master index files for the years 1994, 1995, 2006 and stores into 
-#' ## different {year}master.Rda files. It returns download report in data frame format.
+#' ## different {year}master.Rda files. It returns download report in dataframe format.
 #'}
 
 getMasterIndex <- function(year.array) {
@@ -36,11 +36,22 @@ getMasterIndex <- function(year.array) {
     return()
   }
   
+  # Check the download compatibility based on OS
+	if (nzchar(Sys.which("libcurl")))  {
+	  dmethod <- "libcurl"
+	} else if (nzchar(Sys.which("wget"))) {
+	  dmethod <- "wget"
+	} else if (nzchar(Sys.which("curl"))) {
+	  dmethod <- "curl"
+	} else{
+	  dmethod <- "auto"
+	}
+	
   # function to download file and return FALSE if download
   # error
-  DownloadFile <- function(link, dfile) {
+  DownloadFile <- function(link, dfile, dmethod) {
     tryCatch({
-      utils::download.file(link, dfile, quiet = TRUE)
+      utils::download.file(link, dfile, method = dmethod, quiet = TRUE)
       return(TRUE)
     }, error = function(e) {
       return(FALSE)
@@ -74,7 +85,7 @@ getMasterIndex <- function(year.array) {
       link <- paste0("https://www.sec.gov/Archives/edgar/full-index/", 
         year, "/QTR", quarter, "/master.gz")
       
-      res <- DownloadFile(link, dfile)
+      res <- DownloadFile(link, dfile, dmethod)
       if (res) {
         # Unzip gz file
         R.utils::gunzip(dfile, destname = file, temporary = FALSE, 

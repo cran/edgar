@@ -7,20 +7,20 @@
 getSentimentCount(word.frq, words.list)
 }
 \arguments{
-\item{word.frq}{Word frequency data frame created using 
+\item{word.frq}{Word frequency dataframe created using 
 \link[edgar]{getWordfrquency} function.}
 
 \item{words.list}{Word list as a sentiment dictionary.}
 }
 \value{
-Function returns sentiment words frequency data frame.
+Function returns sentiment words frequency dataframe.
 }
 \description{
 \code{getSentimentCount} get sentiment words count from filing.
 }
 \details{
-getSentimentCount function takes words frequency data frame as an input from 
-\link[edgar]{getWordfrquency} function. It compares this words frequency data frame 
+getSentimentCount function takes words frequency dataframe as an input from 
+\link[edgar]{getWordfrquency} function. It compares these words 
 with the input dictionary and parse matched words with their frequencies.
 }
 \examples{
@@ -28,10 +28,9 @@ with the input dictionary and parse matched words with their frequencies.
 
 words.list <- scan(system.file('data/negwords.txt', package = 'edgar'), what='character')
 ## User can apply any desired user defined dictionary other than 
-## default dictionaries from this package.
+## default dictionaries from this package in txt format with each word in separate line.
 
 senti.words <- getSentimentCount(word.frq, words.list)
 }
 
 }
-

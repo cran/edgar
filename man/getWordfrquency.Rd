@@ -2,7 +2,7 @@
 % Please edit documentation in R/getWordfrquency.R
 \name{getWordfrquency}
 \alias{getWordfrquency}
-\title{Creates words frequency data frame from EDGAR filing.}
+\title{Creates words frequency dataframe from EDGAR filing.}
 \usage{
 getWordfrquency(filepath)
 }
@@ -10,15 +10,15 @@ getWordfrquency(filepath)
 \item{filepath}{Path of downloaded filing.}
 }
 \value{
-Function returns words frequency data frame.
+Function returns words frequency dataframe.
 }
 \description{
-\code{getWordfrquency} creates word frequency data frame using filing text.
+\code{getWordfrquency} creates word frequency dataframe using filing text.
 }
 \details{
-getWordfrquency function takes path of filing which can be download using 
+getWordfrquency function takes path of filing which can be downloaded using 
 \link[edgar]{getFilings} function. Function cleans text from filing
-and creates words frequency data frame. This data frame is used
+and creates words frequency dataframe. This dataframe is used
 in \link[edgar]{getWordcloud}, \link[edgar]{getWordHistogram}, and 
 \link[edgar]{getSentimentCount} functions.
 }
@@ -28,4 +28,3 @@ in \link[edgar]{getWordcloud}, \link[edgar]{getWordHistogram}, and
 word.frq <- getWordfrquency('Edgar Filings/1000180_10-K_2006/1000180_10-K_2006-03-15.txt')
 }
 }
-

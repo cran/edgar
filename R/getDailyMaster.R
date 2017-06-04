@@ -4,7 +4,7 @@
 #'
 #' getDailyMaster function takes date as an input parameter from user,  
 #' download master index for that particular date from https://www.sec.gov/Archives/edgar/daily-index/
-#' site. It strips headers and convert this daily filing information in data frame format.
+#' site. It strips headers and converts this daily filing information in dataframe format.
 #' Function creates new directory 'Daily Index' into working directory 
 #' to save these downloaded daily master index files.
 #' 
@@ -44,11 +44,22 @@ getDailyMaster <- function(input.date) {
   # function for downloading daily Index
   GetDailyInfo <- function(day, month, year) {
     
+	# Check the download compatibility based on OS
+	if (nzchar(Sys.which("libcurl")))  {
+	  dmethod <- "libcurl"
+	} else if (nzchar(Sys.which("wget"))) {
+	  dmethod <- "wget"
+	} else if (nzchar(Sys.which("curl"))) {
+	  dmethod <- "curl"
+	} else{
+	  dmethod <- "auto"
+	}
+	
     # function to download file and return FALSE if download
     # error
-    DownloadFile <- function(link, dfile) {
+    DownloadFile <- function(link, dfile, dmethod) {
       tryCatch({
-        utils::download.file(link, dfile, quiet = TRUE)
+        utils::download.file(link, dfile, method = dmethod, quiet = TRUE)
         return(TRUE)
       }, error = function(e) {
         return(FALSE)
@@ -71,25 +82,26 @@ getDailyMaster <- function(input.date) {
     down.success = FALSE
     
     if (year < 1999) {
-      fun.return3 <- DownloadFile(link3, filename)
+      fun.return3 <- DownloadFile(link3, filename, dmethod)
       if (fun.return3 == 1) {
         down.success = TRUE
       }
     }
     
     if (year > 1998 && year < 2012) {
-      fun.return4 <- DownloadFile(link4, filename)
+      fun.return4 <- DownloadFile(link4, filename, dmethod)
       if (fun.return4 == 1) {
         down.success = TRUE
       }
     }
     
     if (year > 2011) {
-      fun.return1 <- DownloadFile(link1, filename)
-      if (fun.return1) {
+      fun.return1 <- DownloadFile(link1, filename, dmethod)
+      if (fun.return1 && file.size(filename)>500) {
         down.success = TRUE
+        
       } else {
-        fun.return2 <- DownloadFile(link2, filename)
+        fun.return2 <- DownloadFile(link2, filename, dmethod)
         if (fun.return2) {
           down.success = TRUE
         }

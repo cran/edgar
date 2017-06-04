@@ -7,7 +7,7 @@
 getWordcloud(word.frq, words.list)
 }
 \arguments{
-\item{word.frq}{Word frequency data frame created using 
+\item{word.frq}{Word frequency dataframe created using 
 \link[edgar]{getWordfrquency} function.}
 
 \item{words.list}{Word list as a sentiment dictionary.}
@@ -19,8 +19,8 @@ Function creates wordcloud.
 \code{getWordcloud} creates wordcloud of words from filing.
 }
 \details{
-getWordcloud function takes words frequency data frame as an input from 
-\link[edgar]{getWordfrquency} function. It compares this words frequency data frame 
+getWordcloud function takes words frequency dataframe as an input from 
+\link[edgar]{getWordfrquency} function. It compares these words 
 with the input dictionary and generates wordcloud using match words.
 }
 \examples{
@@ -34,4 +34,3 @@ getWordcloud(word.frq, words.list)
 }
 
 }
-

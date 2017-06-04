@@ -12,15 +12,15 @@ getFilingInfo(firm.name, filing.year)
 \item{filing.year}{Filing year in integer.}
 }
 \value{
-Function returns data frame with filing information.
+Function returns dataframe with filing information.
 }
 \description{
 \code{getFilingInfo} retrieves filing information of company based on company name.
 }
 \details{
-getFilingInfo function takes firm name and filing year as input parameters from user,
-and gives filing information for that firm. Master index file must be present 
-for given year before applying this function. It can be downloaded using 
+getFilingInfo function takes company name and filing year as input parameters from user,
+and gives filing information for that company. Master index file must be present 
+for given year before applying this function which can be downloaded using 
 \link[edgar]{getMasterIndex} function.
 }
 \examples{
@@ -29,4 +29,3 @@ for given year before applying this function. It can be downloaded using
 info <- getFilingInfo('United Technologies', 1994) 
 }
 }
-

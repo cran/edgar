@@ -2,9 +2,9 @@
 #'
 #' \code{getFilingInfo} retrieves filing information of company based on company name.
 #'
-#' getFilingInfo function takes firm name and filing year as input parameters from user,
-#' and gives filing information for that firm. Master index file must be present 
-#' for given year before applying this function. It can be downloaded using 
+#' getFilingInfo function takes company name and filing year as input parameters from user,
+#' and gives filing information for that company. Master index file must be present 
+#' for given year before applying this function which can be downloaded using 
 #' \link[edgar]{getMasterIndex} function.  
 #' 
 #' @usage getFilingInfo(firm.name, filing.year)
@@ -12,7 +12,7 @@
 #' @param firm.name Desired full name or partial name of company.
 #' @param filing.year Filing year in integer.
 #' 
-#' @return Function returns data frame with filing information.
+#' @return Function returns dataframe with filing information.
 #'   
 #' @examples
 #' \dontrun{

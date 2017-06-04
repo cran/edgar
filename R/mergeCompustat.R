@@ -3,26 +3,28 @@
 #' \code{mergeCompustat} merge sentiment count of 10-K filing with Compustat data.
 #'
 #' mergeCompustat function takes cik number, filing year, sentiment dictionary, and  
-#' Compustat data. It download and parse 10-K filing for desired cik and filing year  
-#' present in input Compustat dataset. It count sentiment words present in defined 10-K 
-#' and append to Compustat data frame. Working directory must contain 'Master Index' 
-#' directory which contains master Rda files for specified filing year. This master index
-#' can be downloaded using \link[edgar]{getMasterIndex} function. Please note that,
-#' Compustat data must contains 'cik' column, and  'datadate' column in 'mm/dd/yyyy' format.
+#' Compustat data. It downloads 10-K filings for desired cik and filing year  
+#' present in an input Compustat dataset in new directory "Edgar filings/Compustat filings".
+#' The function also counts sentiment words from 10-K's and append those counts with new 
+#' column named "sentiment.count" to Compustat dataframe. Working directory must contain 
+#' 'Master Index' directory which contains master Rda files for specified filing year. 
+#' This master index can be downloaded using \link[edgar]{getMasterIndex} function. 
+#' Please note that Compustat data must contains 'cik' column, and  'datadate' 
+#' column in 'mm/dd/yyyy' format.
 #'  
 #' @usage mergeCompustat (cik.no, filing.yr, words.list, compustat.data)
 #'
 #' @param cik.no cik number.
 #' @param filing.yr 10-K filing year.
 #' @param words.list sentiment dictionary in list format.
-#' @param compustat.data Compustat data frame.
+#' @param compustat.data Compustat dataframe.
 #'
 #' @return Compustat data with sentiment.count column for desired cik and filing year.
 #'   
 #' @examples
 #' \dontrun{
 #' 
-#' ## User needs to input Compustat data in data frame format.
+#' ## User needs to input Compustat data in dataframe format.
 #' compustat.data <- read.csv('compustat_data.csv')
 #' 
 #' ## User can apply any desired user defined dictionary 
@@ -42,11 +44,22 @@
 
 mergeCompustat <- function(cik.no, filing.yr, words.list, compustat.data) {
   
+  # Check the download compatibility based on OS
+	if (nzchar(Sys.which("libcurl")))  {
+	  dmethod <- "libcurl"
+	} else if (nzchar(Sys.which("wget"))) {
+	  dmethod <- "wget"
+	} else if (nzchar(Sys.which("curl"))) {
+	  dmethod <- "curl"
+	} else{
+	  dmethod <- "auto"
+	}
+	
   # function to download file and return FALSE if download
   # error
-  DownloadFile <- function(link, filename) {
+  DownloadFile <- function(link, filename, dmethod) {
     tryCatch({
-      utils::download.file(link, filename, quiet = TRUE)
+      utils::download.file(link, filename, method = dmethod, quiet = TRUE)
       return(TRUE)
     }, error = function(e) {
       return(FALSE)
@@ -56,20 +69,19 @@ mergeCompustat <- function(cik.no, filing.yr, words.list, compustat.data) {
   options(warn = -1)  # remove warnings
   
   # Convert cik to number to have consistancy in data and
-  # filter data frame.
-  compustat.data$cik <- as.numeric(compustat.data$cik)
-  compustat.data <- compustat.data[compustat.data$cik %in% 
-    cik.no, ]
+  # filter dataframe.
+  compustat.data$cik <- as.numeric(as.character(compustat.data$cik))
+  compustat.data <- compustat.data[compustat.data$cik %in% cik.no, ]
   compustat.data <- compustat.data[!is.na(compustat.data$cik), 
     ]
   
   if (nrow(compustat.data) == 0) {
-    msg <- paste0("cik list not found in Compustat data.")
+    msg <- paste0("cik not found in Compustat data.")
     cat(msg)
     return()
   }
   
-  # filter data frame by filing year
+  # filter dataframe by filing year
   compustat.data$datadate <- as.character(compustat.data$datadate)
   compustat.data$filing.yr <- sub(".*(\\d{4}).*", "\\1", compustat.data$datadate)
   compustat.data <- compustat.data[compustat.data$filing.yr == 
@@ -126,20 +138,24 @@ mergeCompustat <- function(cik.no, filing.yr, words.list, compustat.data) {
   temp.data$sentiment.count <- NULL
   
   # Create new directory to store 10-K filing
-  dir.create("Edgar Filings/Temp filings")
-  dest.filename <- "Edgar Filings/Temp filings/temp.txt"
-  
+  new.dir <- "Edgar Filings/Compustat filings"
+  dir.create(new.dir)
+
   for (i in 1:nrow(temp.data)) {
     # Create link to downlaod 10-K filing
     LINK <- paste0("https://www.sec.gov/Archives/", temp.data$edgar.link[i])
-    res <- DownloadFile(LINK, dest.filename)
+    
+    dest.filename <- paste0(new.dir, "/", temp.data$cik[i], 
+                            "_", f.type, "_", filing.yr, ".txt")
+    
+    res <- DownloadFile(LINK, dest.filename, dmethod)
     
     if (res == FALSE) {
       temp.data$sentiment.count[i] <- NA
       next
     }
     
-    word.frq <- getWordfrquency(dest.filename)  # Create word frequency data frame for 10-K filing
+    word.frq <- getWordfrquency(dest.filename)  # Create word frequency dataframe for 10-K filing
     
     senti.words <- getSentimentCount(word.frq, words.list)  #  get sentiment words count
     

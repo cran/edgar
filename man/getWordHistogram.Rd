@@ -7,7 +7,7 @@
 getWordHistogram(word.frq, words.list)
 }
 \arguments{
-\item{word.frq}{Word frequency data frame created using 
+\item{word.frq}{Word frequency dataframe created using 
 \link[edgar]{getWordfrquency} function.}
 
 \item{words.list}{Word list as a sentiment dictionary.}
@@ -19,8 +19,8 @@ Function creates histogram.
 \code{getWordHistogram} creates histogram of most frequent words in filing.
 }
 \details{
-getWordHistogram function takes words frequency data frame as an input from 
-\link[edgar]{getWordfrquency} function. It compares this words frequency data frame 
+getWordHistogram function takes words frequency dataframe as an input from 
+\link[edgar]{getWordfrquency} function. It compares these words 
 with input dictionary and generates histogram of 15 most frequent matched words 
 with their frequencies.
 }
@@ -35,4 +35,3 @@ getWordHistogram(word.frq, words.list)
 }
 
 }
-

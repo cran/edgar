@@ -1,11 +1,11 @@
 #' Retrieves EDGAR filings from SEC site.
 #'
-#' \code{getFilings} retrieves EDGAR filings for the specified CIK, form type,
+#' \code{getFilings} retrieves EDGAR filings for the specified CIK, form-type,
 #' and year mentioned in function parameters.
 #'
-#' getFilings function takes year, form type, and CIK as an input.
-#' Working directory should contain 'Master Index' 
-#' directory which contains master Rda files for specific years downloaded using 
+#' getFilings function takes year, form-type, and CIK as an input.
+#' Working directory must contains master index (in Rda) files for input year which can be 
+#' downloaded using 
 #' \link[edgar]{getMasterIndex} function. Function creates new directory 'Edgar filings'  
 #' to store all downloaded filings. Please note, for all other functions in this 
 #' package needs to locate the same working directory.  
@@ -18,28 +18,39 @@
 #' @param form.type character string containing specific Form type to be downloaded. 
 #' form.type = 'ALL' if required to download all form-types. 
 #' 
-#' @return Function downloads EDGAR filings and returns download status data frame.
+#' @return Function downloads EDGAR filings and returns download status in dataframe.
 #'   
 #' @examples
 #' \dontrun{
 #' 
 #' report <- getFilings(1994, 100030, 'ALL') 
 #' ## download all filings filed by the firm with CIK=100030 in the year 1994. 
-#' ## Generates download report in data frame.
+#' ## Generates download report in dataframe.
 #' 
 #' report <- getFilings(2006, 1000180, '10-K')
 #' ## download '10-K' filings filed by the firm with CIK=1000180 in the year 2006. 
-#' ## Generates download report in data frame.
+#' ## Generates download report in dataframe.
 #' }
 #' 
 
 getFilings <- function(year, cik.no, form.type) {
   
+  # Check the download compatibility based on OS
+	if (nzchar(Sys.which("libcurl")))  {
+	  dmethod <- "libcurl"
+	} else if (nzchar(Sys.which("wget"))) {
+	  dmethod <- "wget"
+	} else if (nzchar(Sys.which("curl"))) {
+	  dmethod <- "curl"
+	} else{
+	  dmethod <- "auto"
+	}
+
   # function to download file and return FALSE if download
   # error
-  DownloadFile <- function(link, filename) {
+  DownloadFile <- function(link, filename, dmethod) {
     tryCatch({
-      utils::download.file(link, filename, quiet = TRUE)
+      utils::download.file(link, filename, method = dmethod, quiet = TRUE)
       return(TRUE)
     }, error = function(e) {
       return(FALSE)
@@ -50,7 +61,7 @@ getFilings <- function(year, cik.no, form.type) {
   
   yr.master <- paste0(year, "master.Rda")  # Create specific year .Rda filename.
   
-  stat.filing2 <- data.frame()  # Create empty data frame to store download status result.
+  stat.filing2 <- data.frame()  # Create empty dataframe to store download status result.
   
   if (file.exists(paste0("Master Index/", yr.master))) {
     load(paste0("Master Index/", yr.master))
@@ -109,7 +120,7 @@ getFilings <- function(year, cik.no, form.type) {
           "_", f.type, "_", year.master$DATE_FILED[i], 
           ".txt")
           
-          res <- DownloadFile(LINK, dest.filename)
+          res <- DownloadFile(LINK, dest.filename, dmethod)
           if (res) {
           temp.status <- data.frame(Link = LINK, Status = "Download success")
           } else {

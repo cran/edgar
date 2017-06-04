@@ -2,14 +2,14 @@
 #'
 #' \code{getWordHistogram} creates histogram of most frequent words in filing.
 #'
-#' getWordHistogram function takes words frequency data frame as an input from 
-#' \link[edgar]{getWordfrquency} function. It compares this words frequency data frame 
+#' getWordHistogram function takes words frequency dataframe as an input from 
+#' \link[edgar]{getWordfrquency} function. It compares these words 
 #' with input dictionary and generates histogram of 15 most frequent matched words 
 #' with their frequencies.
 #'
 #' @usage getWordHistogram(word.frq, words.list)
 #'
-#' @param word.frq Word frequency data frame created using 
+#' @param word.frq Word frequency dataframe created using 
 #' \link[edgar]{getWordfrquency} function.
 #' @param words.list Word list as a sentiment dictionary.
 #' 
@@ -29,13 +29,13 @@
 getWordHistogram <- function(word.frq, words.list) {
   
   if (!is.data.frame(word.frq)) {
-    msg1 <- "Input for word frequency data frame is not a data frame"
+    msg1 <- "Input for word frequency dataframe is not a valid dataframe"
     cat(msg1)
     return()
   }
   
   if (nrow(word.frq) == 0) {
-    msg2 <- "Word frequency data frame is empty"
+    msg2 <- "Word frequency dataframe is empty"
     cat(msg2)
     return()
   }
@@ -63,7 +63,7 @@ getWordHistogram <- function(word.frq, words.list) {
       colour = "black"))
     
   } else {
-    msg3 <- "Word frequency data frame is invalid"
+    msg3 <- "Word frequency dataframe is invalid"
     cat(msg3)
     return()
   }
