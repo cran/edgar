@@ -2,7 +2,7 @@
 % Please edit documentation in R/getDailyMaster.R
 \name{getDailyMaster}
 \alias{getDailyMaster}
-\title{Retrieves daily master index.}
+\title{Retrieves daily master index}
 \usage{
 getDailyMaster(input.date)
 }
@@ -10,21 +10,22 @@ getDailyMaster(input.date)
 \item{input.date}{in character format 'mm/dd/YYYY'.}
 }
 \value{
-Function returns filing information for the input date.
+Function returns filings information in a dataframe format.
 }
 \description{
-\code{getDailyMaster} retrieves daily master index from US SEC site.
+\code{getDailyMaster} retrieves daily master index from the US SEC site.
 }
 \details{
-getDailyMaster function takes date as an input parameter from user,  
-download master index for that particular date from https://www.sec.gov/Archives/edgar/daily-index/
-site. It strips headers and converts this daily filing information in dataframe format.
-Function creates new directory 'Daily Index' into working directory 
-to save these downloaded daily master index files.
+getDailyMaster function takes date as an input parameter from a user,  
+and downloads master index for the date from the US SEC server 
+\url{https://www.sec.gov/Archives/edgar/daily-index/}. It strips headers 
+and converts this daily filing information into dataframe format.
+Function creates new directory 'Daily Indexes' into working directory 
+to save these downloaded daily master index files in Rda format.
 }
 \examples{
 \dontrun{
 
-daily.filing.info <- getDailyMaster('08/09/2016')
+output <- getDailyMaster('08/09/2016')
 } 
 }

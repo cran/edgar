@@ -2,39 +2,41 @@
 % Please edit documentation in R/getMasterIndex.R
 \name{getMasterIndex}
 \alias{getMasterIndex}
-\title{Retrieves quarterly master index.}
+\title{Retrieves quarterly master index}
 \usage{
-getMasterIndex(year.array)
+getMasterIndex(filing.year)
 }
 \arguments{
-\item{year.array}{year in integer or integer array containing years for which master 
-index are to be downloaded.}
+\item{filing.year}{vector of integer containing filing years.}
 }
 \value{
-Function retrieves quarterly master index files 
-from \url{https://www.sec.gov/Archives/edgar/full-index/} site and returns download status dataframe.
+Function downloads quarterly master index files and stores them 
+into the mentioned directory.
 }
 \description{
-\code{getMasterIndex} retrieves the quarterly master index from US SEC site.
+\code{getMasterIndex} retrieves the quarterly master indexes from the US SEC site.
 }
 \details{
-getMasterIndex function takes filing year as an input parameter from user,  
-download quarterly master index from https://www.sec.gov/Archives/edgar/full-index/.
-It strips the headers, converts into dataframe, and merges such quarterly
-dataframes into yearly dataframes and stored it in Rda format.
-Function creates new directory 'Master Index' into working directory 
-to save these Rda Master Index. Please note, for all other functions in this 
-package needs to locate the same working directory to access these Rda master index files.
+getMasterIndex function takes filing year as an input parameter from a user,  
+downloads quarterly master indexes from the US SEC server 
+\url{https://www.sec.gov/Archives/edgar/full-index/}. It then strips headers from the 
+master index files, converts them into dataframe, and 
+merges such quarterly dataframes into yearly dataframe, and stores them 
+in Rda format. It has ability to download master indexes for multiple years 
+based on the user input. This function creates a new directory 'Master Indexes' 
+into current working directory to save these Rda Master Index. Please note, for 
+all other functions in this package need to locate the same working 
+directory to access these Rda master index files.
 }
 \examples{
 \dontrun{
 
-report <- getMasterIndex(1995) 
-## Downloads quarterly master index files for the year 1995 and stores into yearly  
-## 1995master.Rda file. It returns download report in dataframe format.
+getMasterIndex(2006) 
+## Downloads quarterly master index files for 2006 and 
+stores into yearly 2006master.Rda file.
 
-report <- getMasterIndex(c(1994, 2006, 2014)) 
-## Download quarterly master index files for the years 1994, 1995, 2006 and stores into 
-## different {year}master.Rda files. It returns download report in dataframe format.
+getMasterIndex(c(2006, 2008)) 
+## Downloads quarterly master index files for 2006 and 2008, and 
+stores into 2006master.Rda and 2008master.Rda files.
 }
 }

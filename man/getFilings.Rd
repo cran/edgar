@@ -2,44 +2,52 @@
 % Please edit documentation in R/getFilings.R
 \name{getFilings}
 \alias{getFilings}
-\title{Retrieves EDGAR filings from SEC site.}
+\title{Retrieves EDGAR filings from SEC server}
 \usage{
-getFilings(year, cik.no, form.type)
+getFilings(cik.no, form.type, filing.year, quarter, downl.permit)
 }
 \arguments{
-\item{year}{an integer specifies year for which EDGAR filings are to be downloaded.}
+\item{cik.no}{vector of CIK number of firms in integer format. Suppress leading 
+zeroes from CIKs. Keep cik.no = 'ALL' if needs to download for all CIKs.}
 
-\item{cik.no}{an integer containing specific CIK number for which EDGAR filings are 
-to be downloaded. cik.no = 'ALL' if required to download for all CIK's.}
+\item{form.type}{character vector containing form type to be downloaded. 
+form.type = 'ALL' if need to download all forms.}
 
-\item{form.type}{character string containing specific Form type to be downloaded. 
-form.type = 'ALL' if required to download all form-types.}
+\item{filing.year}{vector of four digit numeric year}
+
+\item{quarter}{vector of one digit quarter integer number. By deault, it is kept
+as c(1 ,2, 3, 4).}
+
+\item{downl.permit}{"y" or "n". The default value of downl.permit is "n". It 
+asks a user permission to download fillings. This permission helps the user 
+to decide in case if number of filings are large. Setting downl.permit = "y" 
+will not ask for user permission to download filings.}
 }
 \value{
-Function downloads EDGAR filings and returns download status in dataframe.
+Function downloads EDGAR filings and returns download status in dataframe 
+format with CIK, company name, form type, date filed, accession number, and 
+download status.
 }
 \description{
-\code{getFilings} retrieves EDGAR filings for the specified CIK, form-type,
-and year mentioned in function parameters.
+\code{getFilings} retrieves EDGAR filings for a specific CIKs, form-type,
+filing year and quarter of the filing.
 }
 \details{
-getFilings function takes year, form-type, and CIK as an input.
-Working directory must contains master index (in Rda) files for input year which can be 
-downloaded using 
-\link[edgar]{getMasterIndex} function. Function creates new directory 'Edgar filings'  
-to store all downloaded filings. Please note, for all other functions in this 
-package needs to locate the same working directory.
+getFilings function takes CIKs, form type, filing year, and quarter of the 
+filing as input. It creates new directory 'Edgar filings_full text' to 
+store all downloaded filings. All the filings will be stored in the 
+current working directory. Keep the same current working directory for 
+further process.
 }
 \examples{
 \dontrun{
 
-report <- getFilings(1994, 100030, 'ALL') 
-## download all filings filed by the firm with CIK=100030 in the year 1994. 
-## Generates download report in dataframe.
+output <- getFilings(cik.no = c(1000180, 38079), c('10-K','10-Q'), 
+                     2006, quarter = c(1, 2, 3), downl.permit = "n")
+                     
+## download '10-Q' and '10-K' filings filed by the firm with 
+CIK = 1000180 in quarters 1,2, and 3 of the year 2006. These 
+filings will be stored in the current working directory.
 
-report <- getFilings(2006, 1000180, '10-K')
-## download '10-K' filings filed by the firm with CIK=1000180 in the year 2006. 
-## Generates download report in dataframe.
 }
-
 }
