@@ -7,7 +7,7 @@
 #' a user and provides information on the Form 8-K triggering events along with the firm 
 #' filing information. The function searches and imports existing downloaded 
 #' 8-K filings in the current directory; otherwise it downloads them using 
-#' \link[edgar]{getMasterIndex} function. It then reads the 8-K filings and parse the 
+#' \link[edgar]{getFilings} function. It then reads the 8-K filings and parse the 
 #' contents to get events information.
 #' 
 #' @usage get8KItems(cik.no, filing.year)

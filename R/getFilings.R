@@ -119,8 +119,13 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
       form.type <- unique(year.master$form.type)
     }
     
-    year.master <- year.master[which(year.master$cik %in% cik.no & year.master$form.type %in% form.type 
-                               & year.master$quarter %in% quarter), ]
+    if( cik.no == "ALL" ){
+      year.master <- year.master[which(year.master$form.type %in% form.type 
+                                       & year.master$quarter %in% quarter), ]
+    } else {
+      year.master <- year.master[which(year.master$cik %in% cik.no & year.master$form.type %in% form.type 
+                                       & year.master$quarter %in% quarter), ]
+    }
     
     if(nrow(year.master)>0){
 

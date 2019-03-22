@@ -43,7 +43,8 @@
 getMgmtDisc <- function(cik.no, filing.year) {
     
     f.type <- c("10-K", "10-K405","10KSB", "10KSB40")
-    
+    # 10-K, 10-K405, 10-KSB, 10-KT, 10KSB, 10KSB40, and 10KT405 filings in the EDGAR database
+
     # Check the year validity
     if (!is.numeric(filing.year)) {
         cat("Please check the input year.")
