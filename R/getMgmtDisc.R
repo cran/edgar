@@ -55,7 +55,7 @@ getMgmtDisc <- function(cik.no, filing.year) {
 						 quarter = c(1, 2, 3, 4), downl.permit = "y")
     
     if (is.null(output)){
-      #cat("No annual statements found for given CIK(s) and year(s).")
+      cat("No annual statements found for given CIK(s) and year(s).")
       return()
     }
     
@@ -78,9 +78,17 @@ getMgmtDisc <- function(cik.no, filing.year) {
     }
 
     
+    new.dir <- paste0("MD&A section text")
+    dir.create(new.dir)
+    
+    output$extract.status <- 0
+    
+    output$company.name <- toupper(as.character(output$company.name))
+    output$company.name <- gsub("\\s{2,}", " ",output$company.name)
+    
     for (i in 1:nrow(output)) {
-
         f.type <- gsub("/", "", output$form.type[i])
+        cname <- gsub("\\s{2,}", " ",output$company.name[i])
         year <- output$filing.year[i]
         cik <- output$cik[i]
         date.filed <- output$date.filed[i]
@@ -93,9 +101,13 @@ getMgmtDisc <- function(cik.no, filing.year) {
         filing.text <- readLines(dest.filename)
         
         # Take data from first <DOCUMENT> to </DOCUMENT>
-        filing.text <- filing.text[(grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1]):(grep("</DOCUMENT>", 
-            filing.text, ignore.case = TRUE)[1])]
+        doc.start.line <- (grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1])
+        doc.end.line   <- (grep("</DOCUMENT>", filing.text, ignore.case = TRUE)[1])
         
+        if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
+          filing.text <- filing.text[doc.start.line : doc.end.line]
+        }
+ 
         # See if 10-K is in XLBR or old text format
         if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {
             
@@ -111,8 +123,9 @@ getMgmtDisc <- function(cik.no, filing.year) {
         }
         
         # Preprocessing the filing text
-        f.text <- gsub("\\n|\\t|,|)|%|$", " ", f.text)
+        f.text <- gsub("\\n|\\t|$", " ", f.text)
         f.text <- gsub("^\\s{1,}", "", f.text)
+        f.text <- gsub(" s ", " ", f.text)
         
         # Check for empty Lines and delete it
         empty.lnumbers <- grep("^\\s*$", f.text)
@@ -141,20 +154,27 @@ getMgmtDisc <- function(cik.no, filing.year) {
             md.dicusssion <- paste(f.text[startline:endline], collapse = " ")
             md.dicusssion <- gsub("\\s{2,}", " ", md.dicusssion)
             
-            md.dicusssion <- gsub(" co\\.| inc\\.| ltd\\.| llc\\.| comp\\.", " ", md.dicusssion, ignore.case = T)
+            #md.dicusssion <- gsub(" co\\.| inc\\.| ltd\\.| llc\\.| comp\\.", " ", md.dicusssion, ignore.case = T)
             
-            md.dicusssion2 <- unlist(strsplit(md.dicusssion, "\\. "))
-            md.dicusssion2 <- paste0(md.dicusssion2, ".")
+            #md.dicusssion2 <- unlist(strsplit(md.dicusssion, "\\. "))
+            #md.dicusssion2 <- paste0(md.dicusssion2, ".")
             #md.dicusssion <- CleanFiling2(md.dicusssion)
+            header <- paste0("CIK: ", cik, "\n", "Company Name: ", cname, "\n", 
+                             "Form Type : ", f.type, "\n", "Filing Date: ", date.filed, "\n",
+                             "Accession Number: ", accession.number)  
+            md.dicusssion <- paste0(header, "\n\n\n", md.dicusssion)
+            
         }
         
-        new.dir <- paste0("MD&A section text")
-        dir.create(new.dir)
-        
-        filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
-                           "_", accession.number, ".txt")
-        
-        writeLines(md.dicusssion2, filename2)
+        if(!is.na(md.dicusssion)){
+          filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
+                              "_", accession.number, ".txt")
+          
+          writeLines(md.dicusssion, filename2)
+          output$extract.status[i] <- 1
+        }
+
+        rm(f.text); XML::free(doc)
         
         # update progress bar
         setTxtProgressBar(progress.bar, i)

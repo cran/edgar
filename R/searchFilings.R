@@ -88,7 +88,7 @@ searchFilings <- function(cik.no, form.type, filing.year, word.list) {
         f.text <- paste(f.text, collapse=" ")
         f.text <- gsub("'s ", "", f.text)
         f.text <- gsub("[[:punct:]]", "", f.text, perl=T)
-        f.text <- gsub("[[:digit:]]", "", f.text, perl=T)
+        # f.text <- gsub("[[:digit:]]", "", f.text, perl=T)
         f.text <- iconv(f.text, from = 'UTF-8', to = 'ASCII//TRANSLIT')
         f.text <- tolower(f.text)
         f.text <- gsub("\\s{2,}", " ", f.text)

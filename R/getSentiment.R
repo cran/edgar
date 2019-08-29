@@ -146,9 +146,13 @@ getSentiment <- function(cik.no, form.type, filing.year) {
         # Read filing
         filing.text <- readLines(dest.filename)
         
-        # Extract data from first <DOCUMENT> to </DOCUMENT>
-        filing.text <- filing.text[(grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1]):(grep("</DOCUMENT>", 
-            filing.text, ignore.case = TRUE)[1])]
+        # Take data from first <DOCUMENT> to </DOCUMENT>
+        doc.start.line <- (grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1])
+        doc.end.line   <- (grep("</DOCUMENT>", filing.text, ignore.case = TRUE)[1])
+        
+        if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
+          filing.text <- filing.text[doc.start.line : doc.end.line]
+        }
         
         # See if 10-K is in XLBR or old text format
         if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {

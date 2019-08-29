@@ -53,7 +53,7 @@ getBusinDescr <- function(cik.no, filing.year) {
                        quarter = c(1, 2, 3, 4), downl.permit = "y")
   
   if (is.null(output)){
-   #cat("No annual statements found for given CIK(s) and year(s).")
+    cat("No annual statements found for given CIK(s) and year(s).")
     return()
   }
   
@@ -75,11 +75,19 @@ getBusinDescr <- function(cik.no, filing.year) {
     return(text)
   }
   
+  new.dir <- paste0("Business descriptions text")
+  dir.create(new.dir)
+  
+  output$extract.status <- 0
+  
+  output$company.name <- toupper(as.character(output$company.name))
+  output$company.name <- gsub("\\s{2,}", " ",output$company.name)
   
   for (i in 1:nrow(output)) {
     
     f.type <- gsub("/", "", output$form.type[i])
     year <- output$filing.year[i]
+    cname <- gsub("\\s{2,}", " ",output$company.name[i])
     cik <- output$cik[i]
     date.filed <- output$date.filed[i]
     accession.number <- output$accession.number[i]
@@ -91,8 +99,12 @@ getBusinDescr <- function(cik.no, filing.year) {
     filing.text <- readLines(dest.filename)
     
     # Take data from first <DOCUMENT> to </DOCUMENT>
-    filing.text <- filing.text[(grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1]):(grep("</DOCUMENT>", 
-                                                                                              filing.text, ignore.case = TRUE)[1])]
+    doc.start.line <- (grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1])
+    doc.end.line   <- (grep("</DOCUMENT>", filing.text, ignore.case = TRUE)[1])
+    
+    if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
+      filing.text <- filing.text[doc.start.line : doc.end.line]
+    }
     
     # See if 10-K is in XLBR or old text format
     if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {
@@ -109,9 +121,10 @@ getBusinDescr <- function(cik.no, filing.year) {
     }
     
     # Preprocessing the filing text
-    f.text <- gsub("\\n|\\t|,", " ", f.text)
+    f.text <- gsub("\\n|\\t", " ", f.text)
     f.text <- gsub("\\s{2,}|\\/", " ", f.text)
     f.text <- gsub("^\\s{1,}", "", f.text)
+    f.text <- gsub(" s ", " ", f.text)
     
     f.text <- gsub("Items", "Item", f.text, ignore.case = TRUE)
     f.text <- gsub("PART I", "", f.text, ignore.case = TRUE)
@@ -175,21 +188,31 @@ getBusinDescr <- function(cik.no, filing.year) {
       product.descr <- gsub("\\s{2,}", " ", product.descr)
       words.count <- stringr::str_count(product.descr, pattern = "\\S+")
       product.descr <- product.descr[which(words.count == max(words.count))]
+      product.descr <- gsub("\\. Item 2 .*", ".", product.descr)
       
-      product.descr <- gsub(" co\\.| inc\\.| ltd\\.| llc\\.| comp\\.", " ", product.descr, ignore.case = T)
       
-      product.descr2 <- unlist(strsplit(product.descr, "\\. "))
-      product.descr2 <- paste0(product.descr2, ".")
+      # product.descr <- gsub(" co\\.| inc\\.| ltd\\.| llc\\.| comp\\.", " ", product.descr, ignore.case = T)
       
+      # product.descr2 <- unlist(strsplit(product.descr, "\\. "))
+      # product.descr2 <- paste0(product.descr2, ".")
       #product.descr <- CleanFiling3(product.descr)
+      
+      header <- paste0("CIK: ", cik, "\n", "Company Name: ", cname, "\n", 
+                       "Form Type : ", f.type, "\n", "Filing Date: ", date.filed, "\n",
+                       "Accession Number: ", accession.number)  
+      product.descr <- paste0(header, "\n\n\n", product.descr)
+      
     }
     
-    new.dir <- paste0("Business descriptions text")
-    dir.create(new.dir)
     
-    filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
-                        "_", accession.number, ".txt")
-    writeLines(product.descr2, filename2)
+    if(!is.na(product.descr)){
+      filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
+                          "_", accession.number, ".txt")
+      
+      writeLines(product.descr, filename2)
+      output$extract.status[i] <- 1
+    }
+    
     
     # update progress bar
     setTxtProgressBar(progress.bar, i)

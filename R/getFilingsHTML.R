@@ -65,7 +65,6 @@ getFilingsHTML <- function(cik.no = "ALL", form.type = "ALL", filing.year, quart
   dir.create("Edgar filings_HTML view")
   
   for (i in 1:nrow(output)) {
-    
     f.type <- gsub("/", "", output$form.type[i])
     year <- output$filing.year[i]
     cik <- output$cik[i]
@@ -77,13 +76,15 @@ getFilingsHTML <- function(cik.no = "ALL", form.type = "ALL", filing.year, quart
                             date.filed, "_", accession.number, ".txt")
     # Read filing
     filing.text <- readLines(dest.filename)
-    
+
     # Take data from first <DOCUMENT> to </DOCUMENT>
-    filing.text <- filing.text[(grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1]):(grep("</DOCUMENT>", 
-                                                                                              filing.text, ignore.case = TRUE)[1])]
-    filing.text <- filing.text[((grep("<TEXT>", filing.text, ignore.case = TRUE)[1])+1):((grep("</TEXT>",
-                                                                                            filing.text, ignore.case = TRUE)[1])-1)]
+    doc.start.line <- (grep("<TEXT>", filing.text, ignore.case = TRUE)[1])
+    doc.end.line   <- (grep("</TEXT>", filing.text, ignore.case = TRUE)[1])
     
+    if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
+      filing.text <- filing.text[doc.start.line : doc.end.line]
+    }
+
     if(!grepl(pattern ='<xml>|<type>xml|<html>', filing.text, ignore.case=T)){
       
       filing.text <- gsub("\t"," ", filing.text)

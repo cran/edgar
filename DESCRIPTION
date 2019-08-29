@@ -1,8 +1,8 @@
 Package: edgar
 Type: Package
 Title: Platform for EDGAR Filing Management and Textual Analysis
-Version: 2.0.1
-Date: 2019-03-16
+Version: 2.0.2
+Date: 2019-08-22
 Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil
     <bharatspatil@gmail.com>
 Maintainer: Gunratan Lonare <lonare.gunratan@gmail.com>
@@ -25,6 +25,6 @@ Description: In the USA, companies file different forms with the U.S.
 License: GPL-2
 RoxygenNote: 6.1.1
 NeedsCompilation: no
-Packaged: 2019-03-20 21:46:11 UTC; glonare
+Packaged: 2019-08-22 17:48:23 UTC; GLONARE
 Repository: CRAN
-Date/Publication: 2019-03-22 10:00:09 UTC
+Date/Publication: 2019-08-29 20:40:02 UTC

@@ -374,7 +374,7 @@ getFilingHeader <- function(cik.no, form.type, filing.year) {
     main.output$date.filed <- as.Date(as.character(main.output$date.filed), "%Y-%m-%d")
     main.output$period.of.report <- as.Date(as.character(main.output$period.of.report), 
                                             "%Y%m%d")
-    main.output$filer.cik <- as.numeric(main.output(header.df$filer.cik))
+    main.output$filer.cik <- as.numeric(main.output$filer.cik)
     
     # Close progress bar
     close(progress.bar)
