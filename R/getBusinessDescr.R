@@ -1,30 +1,30 @@
 #' Retrieves business descriptions from annual statements
 #'
-#' \code{getBusinessDescr} retrieves "Item 1. Business" section from annual statements 
+#' \code{getBusinessDescr} retrieves business description section from annual statements 
 #' based on CIK number(s) and filing year(s).
 #'
-#' getBusinDescr function takes firm CIK numbers and filing years as input parameters from 
+#' getBusinDescr function takes firm CIK(s) and filing year(s) as input parameters from 
 #' a user and provides "Item 1" section extracted from annual statements along with 
-#' filing information. The function imports annual filings downloaded 
-#' via \link[edgar]{getFilings} function; otherwise, it downloads the filings which are 
-#' not already been downloaded. It then reads the downloaded statements, cleans HTML tags, 
-#' and parse the contents. It creates a new directory with name 
-#' "Business descriptions text" in the current working directory and 
-#' saves scrapped "Item 1" sections this directory. It considers "10-K", 
+#' filing information. The function imports annual filings (10-K statements) downloaded 
+#' via \link[edgar]{getFilings} function; otherwise, it automates the downloading process 
+#' if not already been downloaded. It then reads the downloaded statements, cleans HTML tags, 
+#' and parse the contents. This function automatically creates a new directory with 
+#' the name "Business descriptions text" in the current working directory and 
+#' saves scrapped business description sections in this directory. It considers "10-K", 
 #' "10-K405", "10KSB", and "10KSB40" form types as annual statements.
 #' 
 #'   
 #' @usage getBusinDescr(cik.no, filing.year)
 #' 
-#' @param cik.no vector of firm CIK numbers in integer format. Suppress leading 
-#' zeroes from CIKs.
+#' @param cik.no vector of firm CIK(s) in integer format. Suppress leading 
+#' zeroes from a CIK number. cik.no = 'ALL' conisders all the CIKs.
 #' 
 #' @param filing.year vector of four digit numeric year
 #' 
-#' @return Function saves scrapped "Item 1" section from annual filings in 
-#' "Business descriptions text" directory present in the working 
-#' directory. The output dataframe contains information on CIK number, 
-#' company name, date of filing, and accession number
+#' @return Function saves scrapped business description section from annual 
+#' filings in "Business descriptions text" directory created in the current 
+#' working directory. The output dataframe contains filing information and 
+#' parsing status.
 #'   
 #' @examples
 #' \dontrun{
@@ -74,7 +74,7 @@ getBusinDescr <- function(cik.no, filing.year) {
     
     return(text)
   }
-  
+    
   new.dir <- paste0("Business descriptions text")
   dir.create(new.dir)
   
@@ -98,23 +98,25 @@ getBusinDescr <- function(cik.no, filing.year) {
     # Read filing
     filing.text <- readLines(dest.filename)
     
-    # Take data from first <DOCUMENT> to </DOCUMENT>
-    doc.start.line <- (grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1])
-    doc.end.line   <- (grep("</DOCUMENT>", filing.text, ignore.case = TRUE)[1])
-    
-    if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
-      filing.text <- filing.text[doc.start.line : doc.end.line]
-    }
+    # Extract data from first <DOCUMENT> to </DOCUMENT>
+    tryCatch({
+      filing.text <- filing.text[(grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1]):(grep("</DOCUMENT>", 
+                                                                                                filing.text, ignore.case = TRUE)[1])]
+    }, error = function(e) {
+      filing.text <- filing.text ## In case opening and closing DOCUMENT TAG not found, cosnider full web page
+    })
     
     # See if 10-K is in XLBR or old text format
     if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {
       
-      doc <- XML::htmlParse(filing.text, asText = TRUE)
-      
+      doc <- XML::htmlParse(filing.text, asText = TRUE, useInternalNodes = TRUE, addFinalizer = FALSE)
       f.text <- XML::xpathSApply(doc, "//text()[not(ancestor::script)][not(ancestor::style)][not(ancestor::noscript)][not(ancestor::form)]", 
                                  XML::xmlValue)
       
       f.text <- iconv(f.text, "latin1", "ASCII", sub = " ")
+      
+	  ## Free up htmlParse document to avoid memory leakage, this calls C function
+      #.Call('RS_XML_forceFreeDoc', doc, package= 'XML')
       
     } else {
       f.text <- filing.text
@@ -204,8 +206,7 @@ getBusinDescr <- function(cik.no, filing.year) {
       
     }
     
-    
-    if(!is.na(product.descr)){
+    if( (!is.na(product.descr)) & (max(words.count)>100)){
       filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
                           "_", accession.number, ".txt")
       
@@ -226,7 +227,7 @@ getBusinDescr <- function(cik.no, filing.year) {
   
   output$quarter <- NULL
   output$filing.year <- NULL
-  output$status <- NULL
+  names(output)[names(output) == 'status'] <- 'downld.status'
   
   cat("Business descriptions are stored in 'Business descriptions text' directory.")
   

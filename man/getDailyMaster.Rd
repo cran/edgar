@@ -13,11 +13,11 @@ getDailyMaster(input.date)
 Function returns filings information in a dataframe format.
 }
 \description{
-\code{getDailyMaster} retrieves daily master index from the US SEC site.
+\code{getDailyMaster} retrieves daily master index from the U.S. SEC EDGAR server.
 }
 \details{
 getDailyMaster function takes date as an input parameter from a user,  
-and downloads master index for the date from the US SEC server 
+and downloads master index for the date from the U.S. SEC EDGAR server 
 \url{https://www.sec.gov/Archives/edgar/daily-index/}. It strips headers 
 and converts this daily filing information into dataframe format.
 Function creates new directory 'Daily Indexes' into working directory 

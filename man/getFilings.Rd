@@ -34,7 +34,7 @@ filing year and quarter of the filing.
 }
 \details{
 getFilings function takes CIKs, form type, filing year, and quarter of the 
-filing as input. It creates new directory 'Edgar filings_full text' to 
+filing as input. It creates new directory "Edgar filings_full text" to 
 store all downloaded filings. All the filings will be stored in the 
 current working directory. Keep the same current working directory for 
 further process.

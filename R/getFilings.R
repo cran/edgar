@@ -4,7 +4,7 @@
 #' filing year and quarter of the filing.
 #'
 #' getFilings function takes CIKs, form type, filing year, and quarter of the 
-#' filing as input. It creates new directory 'Edgar filings_full text' to 
+#' filing as input. It creates new directory "Edgar filings_full text" to 
 #' store all downloaded filings. All the filings will be stored in the 
 #' current working directory. Keep the same current working directory for 
 #' further process. 
@@ -199,6 +199,13 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
         res <- DownloadSECFile(edgar.link, dest.filename, dmethod)
       }
       
+      ## Try downloding one more time if Download error
+      if (res == FALSE) {
+        Sys.sleep(5) ## wait for 5 seconds and then try downloading again
+        res <- DownloadSECFile(edgar.link, dest.filename, dmethod)
+      }
+      
+      ## Fill up the status 
       if (res) {
         index.df$status[i] <- "Download success"
         

@@ -7,30 +7,30 @@
 getBusinDescr(cik.no, filing.year)
 }
 \arguments{
-\item{cik.no}{vector of firm CIK numbers in integer format. Suppress leading 
-zeroes from CIKs.}
+\item{cik.no}{vector of firm CIK(s) in integer format. Suppress leading 
+zeroes from a CIK number. cik.no = 'ALL' conisders all the CIKs.}
 
 \item{filing.year}{vector of four digit numeric year}
 }
 \value{
-Function saves scrapped "Item 1" section from annual filings in 
-"Business descriptions text" directory present in the working 
-directory. The output dataframe contains information on CIK number, 
-company name, date of filing, and accession number
+Function saves scrapped business description section from annual 
+filings in "Business descriptions text" directory created in the current 
+working directory. The output dataframe contains filing information and 
+parsing status.
 }
 \description{
-\code{getBusinessDescr} retrieves "Item 1. Business" section from annual statements 
+\code{getBusinessDescr} retrieves business description section from annual statements 
 based on CIK number(s) and filing year(s).
 }
 \details{
-getBusinDescr function takes firm CIK numbers and filing years as input parameters from 
+getBusinDescr function takes firm CIK(s) and filing year(s) as input parameters from 
 a user and provides "Item 1" section extracted from annual statements along with 
-filing information. The function imports annual filings downloaded 
-via \link[edgar]{getFilings} function; otherwise, it downloads the filings which are 
-not already been downloaded. It then reads the downloaded statements, cleans HTML tags, 
-and parse the contents. It creates a new directory with name 
-"Business descriptions text" in the current working directory and 
-saves scrapped "Item 1" sections this directory. It considers "10-K", 
+filing information. The function imports annual filings (10-K statements) downloaded 
+via \link[edgar]{getFilings} function; otherwise, it automates the downloading process 
+if not already been downloaded. It then reads the downloaded statements, cleans HTML tags, 
+and parse the contents. This function automatically creates a new directory with 
+the name "Business descriptions text" in the current working directory and 
+saves scrapped business description sections in this directory. It considers "10-K", 
 "10-K405", "10KSB", and "10KSB40" form types as annual statements.
 }
 \examples{

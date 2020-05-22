@@ -14,7 +14,7 @@ Function downloads quarterly master index files and stores them
 into the mentioned directory.
 }
 \description{
-\code{getMasterIndex} retrieves the quarterly master indexes from the US SEC site.
+\code{getMasterIndex} retrieves the quarterly master indexes from the U.S. SEC EDGAR server.
 }
 \details{
 getMasterIndex function takes filing year as an input parameter from a user,  

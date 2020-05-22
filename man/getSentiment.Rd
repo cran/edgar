@@ -23,44 +23,62 @@ dictionaries (https://sraf.nd.edu/textual-analysis/resources/) to
 compute sentiment measures of a EDGAR filing. Following are the 
 definitions of the text characteristics and the sentiment measures:
 
-file.size = Total number of words in the filing. It does not consider stop words.
+file.size = The filing size of a complete filing on the EDGAR server in 
+kilobyte (KB).
 
-char.count = Total number of characters in the filing. It does not consider stop words.
+word.count = The total number of words in a filing text, excluding HTML 
+tags and exhibits text.
 
-complex.word.count = Total number of complex words in filing. A word is count 
-as a complex word if contains vowels(a, e, i, o, u) more than three times. 
-It does not consider stop words. 
+unique.word.count = The total number of unique words in a filing text, 
+excluding HTML tags and exhibits text.
 
-lm.dictionary.count = The number of words that occur in the L&M master dictionary.
+stopword.count = The total number of stop words in a filing text, 
+excluding exhibits text.
 
-lm.negative.count = The number of L&M Financial-Negative words in the filing.
+char.count = The total number of characters in a filing text, excluding 
+HTML tags and exhibits text.
 
-lm.positive.count = The number of L&M Financial-Positive words in the filing.
+complex.word.count = The total number of complex words in the filing text. 
+When vowels (a, e, i, o, u) occur more than three times in a word, then 
+that word is identified as a complex word.
 
-lm.strong.modal.count = The number of L&M Financial-Strong Modal words in the filing.
+lm.dictionary.count = The number of words in the filing text that occur 
+in the Loughran-McDonald (LM) master dictionary.
 
-lm.moderate.modal.count = The number of L&M Financial-Moderate Modal words in the filing.
+lm.negative.count = The number of LM financial-negative words in the 
+document.
 
-lm.weak.modal.count = The number of L&M Financial-Weak Modal words in the filing.
+lm.positive.count = The number of LM financial-positive words in the 
+document.
 
-lm.uncertainty.count = The number of L&M Financial-Uncertainty words in the filing.
+lm.strong.modal.count = The number of LM financial-strong modal words 
+in the document.
 
-lm.litigious.count =  The number of L&M Financial-Litigious words in the filing.
+lm.moderate.modal.count = The number of LM financial-moderate Modal 
+words in the document.
 
-harvard.negative.count = Number of words in the filing. that occur in the Harvard 
-General Inquirer Negative word list, as defined by L&M.
+lm.weak.modal.count = The number of LM financial-weak modal words in 
+the document.
+
+lm.uncertainty.count = The number of LM financial-uncertainty words 
+in the document.
+
+lm.litigious.count = The number of LM financial-litigious words in 
+the document.
+
+hv.negative.count = The number of words in the document that occur in 
+the 'Harvard General Inquirer' Negative word list, as defined by LM.
 }
 \description{
 \code{getSentiment} computes sentiment measures of EDGAR filings
 }
 \details{
 getSentiment function takes CIK(s), form type(s), and year(s) as input parameters.  
-The function first imports available downloaded filings in local woking directory 
-'Edgar filings' created by \link[edgar]{getFilings} function; otherwise, 
-it downloads the filings which is not already been downloaded.
-It then reads the filings, cleans the filings, and 
-computes the sentiment measures. The function returns a dataframe
-with filing information, and sentiment measures.
+The function first imports available downloaded filings in the local working directory 
+'Edgar filings_full text' created by \link[edgar]{getFilings} function; otherwise, 
+it automatically downloads the filings which are not already been downloaded.
+It then reads, cleans, and computes sentiment measures for these filings. 
+The function returns a dataframe with filing information and sentiment measures.
 }
 \examples{
 \dontrun{

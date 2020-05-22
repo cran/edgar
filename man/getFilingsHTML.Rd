@@ -27,15 +27,13 @@ in dataframe format.
 HTML format for view.
 }
 \details{
-getFilingsHTML function takes CIKs, form type, filing year, and quarter of the 
+getFilingsHTML function takes CIK(s), form type(s), filing year(s), and quarter of the 
 filing as input. The function imports edgar filings downloaded 
 via \link[edgar]{getFilings} function; otherwise, it downloads the filings which are 
-not already been downloaded. It then reads the downloaded filing, scraps main
-body the filing, and save the filing content in 'Edgar filings_HTML view' 
+not already been downloaded. It then reads the downloaded filings, scraps filing text
+excluding exhibits, and saves the filing contents in 'Edgar filings_HTML view' 
 directory in HTML format. The new directory 'Edgar filings_HTML view' will be 
-automatically created by this function. This function only gives a view of the 
-main body of the filing, exhibit and other supporting documents will not 
-appear in HTML file.
+automatically created by this function.
 }
 \examples{
 \dontrun{

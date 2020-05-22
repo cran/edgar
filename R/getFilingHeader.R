@@ -4,15 +4,15 @@
 #'
 #' getFilingHeader function takes CIK(s), form type(s), and year(s) as input parameters.  
 #' The function first imports available downloaded filings in local woking directory 
-#' 'Edgar filings' created by \link[edgar]{getFilings} function; otherwise, 
-#' it downloads the filings which is not already been downloaded.
-#' It then reads the filings, and parse all the important header information.
-#' The function returns a dataframe with filing information, and header information.
+#' 'Edgar filings_full text' created by \link[edgar]{getFilings} function; 
+#' otherwise, it automatically downloads the filings which are not already been 
+#' downloaded. It then parses all the important header information from filings.
+#' The function returns a dataframe with filing and header information.
 #' 
 #' @usage getFilingHeader(cik.no, form.type, filing.year)
 #' 
-#' @param cik.no vector of CIK number of firms in integer format. Suppress leading 
-#' zeroes from CIKs. Keep cik.no = 'ALL' if needs to download for all CIKs.
+#' @param cik.no vector of CIK(s) in integer format. Suppress leading 
+#' zeroes from CIKs. cik.no = 'ALL' conisders all the CIKs.
 #'  
 #' @param form.type character vector containing form type to be downloaded. 
 #' form.type = 'ALL' if need to download all forms.  

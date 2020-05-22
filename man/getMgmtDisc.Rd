@@ -21,18 +21,17 @@ date of filing, and accession number.
 \description{
 \code{getMgmtDisc} retrieves "Item 7. Management's Discussion and Analysis of 
 Financial Condition and Results of Operations" section of firms from annual statements 
-based on CIK numbers and filing year.
+based on CIK number and filing year.
 }
 \details{
-getMgmtDisc function takes firm CIK numbers and filing years as input parameters from 
+getMgmtDisc function takes firm CIK(s) and filing year(s) as input parameters from 
 a user and provides "Item 7" section extracted from annual statements along with
 filing information. The function imports annual filings downloaded 
 via \link[edgar]{getFilings} function; otherwise, it downloads the filings which are 
-not already been downloaded. It then reads the downloaded statements, cleans HTML tags, 
-and parse the contents. It creates a new directory with name "MD&A section text" 
-in the current working directory and saves scrapped "Item 7" sections in this 
-directory. It considers "10-K", "10-K405", "10KSB", and "10KSB40" form types as 
-annual statements.
+not already been downloaded. It then reads, cleans, and parse the required section 
+from the filings. It creates a new directory with the name "MD&A section text" 
+in the current working directory to save scrapped "Item 7" sections in text format. 
+It considers "10-K", "10-K405", "10KSB", and "10KSB40" form types as annual statements.
 }
 \examples{
 \dontrun{

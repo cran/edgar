@@ -1,30 +1,30 @@
 Package: edgar
 Type: Package
-Title: Platform for EDGAR Filing Management and Textual Analysis
-Version: 2.0.2
-Date: 2019-08-22
+Title: Tool for the U.S. SEC EDGAR Retrieval and Parsing of Corporate
+        Filings
+Version: 2.0.3
+Date: 2020-05-20
 Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil
     <bharatspatil@gmail.com>
 Maintainer: Gunratan Lonare <lonare.gunratan@gmail.com>
 Depends: R (>= 3.1)
 Imports: R.utils, tm, XML, stringr, stringi, qdapRegex
 Description: In the USA, companies file different forms with the U.S. 
-  Securities and Exchange Commission (SEC) through EDGAR (Electronic 
-  Data Gathering, Analysis, and Retrieval system). The EDGAR 
-  database automated system collects all the different necessary 
-  filings and makes it publicly available. Investors, regulators, 
-  and researchers often require these forms for various purposes. 
-  This package helps in bulk data gathering and textual analysis of 
-  EDGAR filings. It downloads filings from SEC server in bulk with 
-  a single query. Additionally, it provides various useful functions:
-  extracts 8-K triggering events, extract "Business (Item 1)" and 
-  "Management's Discussion and Analysis(Item 7)" sections of annual 
-  statements, search filings for desired words, provides sentiment 
-  measures, parse filing header information, and provides HTML 
-  view of SEC filings.  
+    Securities and Exchange Commission (SEC) through EDGAR (Electronic 
+    Data Gathering, Analysis, and Retrieval system). The EDGAR 
+    database automated system collects all the different necessary 
+    filings and makes it publicly available. This package facilitates
+    retrieving, storing, searching, and parsing of all the available 
+    filings on the EDGAR server. It downloads filings from SEC 
+    server in bulk with a single query. Additionally, it provides 
+    various useful functions: extracts 8-K triggering events, extract
+    "Business (Item 1)" and "Management's Discussion and Analysis(Item 7)"
+    sections of annual statements, searches filings for desired 
+    keywords, provides sentiment measures, parses filing header 
+    information, and provides HTML view of SEC filings.  
 License: GPL-2
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 NeedsCompilation: no
-Packaged: 2019-08-22 17:48:23 UTC; GLONARE
+Packaged: 2020-05-22 20:56:31 UTC;
 Repository: CRAN
-Date/Publication: 2019-08-29 20:40:02 UTC
+Date/Publication: 2020-05-22 21:30:02 UTC

@@ -2,17 +2,16 @@
 #'
 #' \code{getMgmtDisc} retrieves "Item 7. Management's Discussion and Analysis of 
 #' Financial Condition and Results of Operations" section of firms from annual statements 
-#' based on CIK numbers and filing year.
+#' based on CIK number and filing year.
 #'
-#' getMgmtDisc function takes firm CIK numbers and filing years as input parameters from 
+#' getMgmtDisc function takes firm CIK(s) and filing year(s) as input parameters from 
 #' a user and provides "Item 7" section extracted from annual statements along with
 #' filing information. The function imports annual filings downloaded 
 #' via \link[edgar]{getFilings} function; otherwise, it downloads the filings which are 
-#' not already been downloaded. It then reads the downloaded statements, cleans HTML tags, 
-#' and parse the contents. It creates a new directory with name "MD&A section text" 
-#' in the current working directory and saves scrapped "Item 7" sections in this 
-#' directory. It considers "10-K", "10-K405", "10KSB", and "10KSB40" form types as 
-#' annual statements.
+#' not already been downloaded. It then reads, cleans, and parse the required section 
+#' from the filings. It creates a new directory with the name "MD&A section text" 
+#' in the current working directory to save scrapped "Item 7" sections in text format. 
+#' It considers "10-K", "10-K405", "10KSB", and "10KSB40" form types as annual statements.
 #' 
 #'   
 #' @usage getMgmtDisc(cik.no, filing.year)
@@ -40,7 +39,7 @@
 #'                       filing.year = c(2005, 2006))
 #'}
 
-getMgmtDisc <- function(cik.no, filing.year) {
+getMgmtDisc <- function(cik.no, filing.year ) {
     
     f.type <- c("10-K", "10-K405","10KSB", "10KSB40")
     # 10-K, 10-K405, 10-KSB, 10-KT, 10KSB, 10KSB40, and 10KT405 filings in the EDGAR database
@@ -77,7 +76,6 @@ getMgmtDisc <- function(cik.no, filing.year) {
       return(text)
     }
 
-    
     new.dir <- paste0("MD&A section text")
     dir.create(new.dir)
     
@@ -100,23 +98,26 @@ getMgmtDisc <- function(cik.no, filing.year) {
         # Read filing
         filing.text <- readLines(dest.filename)
         
-        # Take data from first <DOCUMENT> to </DOCUMENT>
-        doc.start.line <- (grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1])
-        doc.end.line   <- (grep("</DOCUMENT>", filing.text, ignore.case = TRUE)[1])
+        # Extract data from first <DOCUMENT> to </DOCUMENT>
+        tryCatch({
+          filing.text <- filing.text[(grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1]):(grep("</DOCUMENT>", 
+                                                                                                    filing.text, ignore.case = TRUE)[1])]
+        }, error = function(e) {
+          filing.text <- filing.text ## In case opening and closing DOCUMENT TAG not found, cosnider full web page
+        })
         
-        if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
-          filing.text <- filing.text[doc.start.line : doc.end.line]
-        }
- 
         # See if 10-K is in XLBR or old text format
         if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {
             
-            doc <- XML::htmlParse(filing.text, asText = TRUE)
+            doc <- XML::htmlParse(filing.text, asText = TRUE, useInternalNodes = TRUE, addFinalizer = FALSE)
             
             f.text <- XML::xpathSApply(doc, "//text()[not(ancestor::script)][not(ancestor::style)][not(ancestor::noscript)][not(ancestor::form)]", 
                 XML::xmlValue)
             
             f.text <- iconv(f.text, "latin1", "ASCII", sub = " ")
+			
+			      ## Free up htmlParse document to avoid memory leakage, this calls C function
+            #.Call('RS_XML_forceFreeDoc', doc, package= 'XML')
             
         } else {
             f.text <- filing.text
@@ -153,6 +154,7 @@ getMgmtDisc <- function(cik.no, filing.year) {
             
             md.dicusssion <- paste(f.text[startline:endline], collapse = " ")
             md.dicusssion <- gsub("\\s{2,}", " ", md.dicusssion)
+            words.count <- stringr::str_count(md.dicusssion, pattern = "\\S+")
             
             #md.dicusssion <- gsub(" co\\.| inc\\.| ltd\\.| llc\\.| comp\\.", " ", md.dicusssion, ignore.case = T)
             
@@ -164,17 +166,16 @@ getMgmtDisc <- function(cik.no, filing.year) {
                              "Accession Number: ", accession.number)  
             md.dicusssion <- paste0(header, "\n\n\n", md.dicusssion)
             
+            
         }
         
-        if(!is.na(md.dicusssion)){
+        if( (!is.na(md.dicusssion)) & (words.count>100)){
           filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
                               "_", accession.number, ".txt")
           
           writeLines(md.dicusssion, filename2)
           output$extract.status[i] <- 1
         }
-
-        rm(f.text); XML::free(doc)
         
         # update progress bar
         setTxtProgressBar(progress.bar, i)
@@ -188,7 +189,7 @@ getMgmtDisc <- function(cik.no, filing.year) {
     
     output$quarter <- NULL
     output$filing.year <- NULL
-    output$status <- NULL
+    names(output)[names(output) == 'status'] <- 'downld.status'
     
     cat("MD&A section texts are stored in 'MD&A section text' directory.")
     

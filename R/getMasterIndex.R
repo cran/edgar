@@ -1,6 +1,6 @@
 #' Retrieves quarterly master index
 #'
-#' \code{getMasterIndex} retrieves the quarterly master indexes from the US SEC site.
+#' \code{getMasterIndex} retrieves the quarterly master indexes from the U.S. SEC EDGAR server.
 #'
 #' getMasterIndex function takes filing year as an input parameter from a user,  
 #' downloads quarterly master indexes from the US SEC server 

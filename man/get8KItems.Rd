@@ -7,32 +7,32 @@
 get8KItems(cik.no, filing.year)
 }
 \arguments{
-\item{cik.no}{vector of CIK numbers in integer format. Suppress leading 
+\item{cik.no}{vector of CIK(s) in integer format. Suppress leading 
 zeroes from CIKs.}
 
 \item{filing.year}{vector of four digit numeric year}
 }
 \value{
 Function returns dataframe with Form 8-K events information along with CIK
- number, company name, date of filing, and accession number
+ number, company name, date of filing, and accession number.
 }
 \description{
 \code{get8KItems} retrieves Form 8-K event information of firms based on CIK numbers
 and filing year.
 }
 \details{
-get8KItems function takes firm CIK number(s) and filing year(s) as input parameters from 
+get8KItems function takes firm CIK(s) and filing year(s) as input parameters from 
 a user and provides information on the Form 8-K triggering events along with the firm 
 filing information. The function searches and imports existing downloaded 
 8-K filings in the current directory; otherwise it downloads them using 
-\link[edgar]{getFilings} function. It then reads the 8-K filings and parse the 
-contents to get events information.
+\link[edgar]{getFilings} function. It then reads the 8-K filings and parses them 
+to extract events information.
 }
 \examples{
 \dontrun{
 
 output <- get8KItems(cik.no = 38079, filing.year = 2005)
-## Returns 8-K events information for CIK '38079' filed in year 2005.
+## Returns 8-K event information for CIK '38079' filed in year 2005.
 
 output <- get8KItems(cik.no = c(1000180,38079), 
                      filing.year = c(2005, 2006)) 

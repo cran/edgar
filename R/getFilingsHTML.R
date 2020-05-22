@@ -3,15 +3,13 @@
 #' \code{getFilingsHTML} retrieves complete EDGAR filings and store them in
 #' HTML format for view.
 #'
-#' getFilingsHTML function takes CIKs, form type, filing year, and quarter of the 
+#' getFilingsHTML function takes CIK(s), form type(s), filing year(s), and quarter of the 
 #' filing as input. The function imports edgar filings downloaded 
 #' via \link[edgar]{getFilings} function; otherwise, it downloads the filings which are 
-#' not already been downloaded. It then reads the downloaded filing, scraps main
-#' body the filing, and save the filing content in 'Edgar filings_HTML view' 
+#' not already been downloaded. It then reads the downloaded filings, scraps filing text
+#' excluding exhibits, and saves the filing contents in 'Edgar filings_HTML view' 
 #' directory in HTML format. The new directory 'Edgar filings_HTML view' will be 
-#' automatically created by this function. This function only gives a view of the 
-#' main body of the filing, exhibit and other supporting documents will not 
-#' appear in HTML file.
+#' automatically created by this function.
 #' 
 #' @usage getFilingsHTML(cik.no, form.type, filing.year, quarter)
 #'
@@ -77,14 +75,15 @@ getFilingsHTML <- function(cik.no = "ALL", form.type = "ALL", filing.year, quart
     # Read filing
     filing.text <- readLines(dest.filename)
 
-    # Take data from first <DOCUMENT> to </DOCUMENT>
-    doc.start.line <- (grep("<TEXT>", filing.text, ignore.case = TRUE)[1])
-    doc.end.line   <- (grep("</TEXT>", filing.text, ignore.case = TRUE)[1])
-    
-    if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
-      filing.text <- filing.text[doc.start.line : doc.end.line]
-    }
+    # Extract data from first <TEXT> to </TEXT>
+    tryCatch({
+      filing.text <- filing.text[(grep("<TEXT>", filing.text, ignore.case = TRUE)[1]):(grep("</TEXT>", 
+                                                                                                filing.text, ignore.case = TRUE)[1])]
+    }, error = function(e) {
+      filing.text <- filing.text ## In case opening and closing TEXT TAG not found, cosnider full web page
+    })
 
+    
     if(!grepl(pattern ='<xml>|<type>xml|<html>', filing.text, ignore.case=T)){
       
       filing.text <- gsub("\t"," ", filing.text)
@@ -118,7 +117,7 @@ getFilingsHTML <- function(cik.no = "ALL", form.type = "ALL", filing.year, quart
   
   output$quarter <- NULL
   output$filing.year <- NULL
-  output$status <- NULL
+  names(output)[names(output) == 'status'] <- 'downld.status'
   
   cat("HTML filings are stored in 'Edgar filings_HTML view' directory.")
   

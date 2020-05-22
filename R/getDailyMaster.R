@@ -1,9 +1,9 @@
 #' Retrieves daily master index
 #'
-#' \code{getDailyMaster} retrieves daily master index from the US SEC site.
+#' \code{getDailyMaster} retrieves daily master index from the U.S. SEC EDGAR server.
 #'
 #' getDailyMaster function takes date as an input parameter from a user,  
-#' and downloads master index for the date from the US SEC server 
+#' and downloads master index for the date from the U.S. SEC EDGAR server 
 #' \url{https://www.sec.gov/Archives/edgar/daily-index/}. It strips headers 
 #' and converts this daily filing information into dataframe format.
 #' Function creates new directory 'Daily Indexes' into working directory 
@@ -148,6 +148,11 @@ getDailyMaster <- function(input.date) {
                 date.filed = scrapped.data[[4]], edgar.link = scrapped.data[[5]])
             
             final.data$edgar.link <- NULL
+            
+            ## Save daily master index in Rda format
+            file.remove(filename)
+            save(final.data, file = paste0(filename, ".Rda"))
+  
             return(final.data)
         }else{
            cat(" Daily master index is not availbale for this date.")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/searchFilings.R
 \name{searchFilings}
 \alias{searchFilings}
-\title{Search EDGAR filings for specific words}
+\title{Search EDGAR filings for specific keywords}
 \usage{
 searchFilings(cik.no, form.type, filing.year, word.list)
 }
@@ -18,25 +18,26 @@ form.type = 'ALL' if need to download all forms.}
 \item{word.list}{vector of words to search in the filing}
 }
 \value{
-Function returns dataframe containing filing information, size of the 
-filing, and the number of word hits based on the input phrases. Following are 
-the definitions of some important variables:  
- 
-file.size = Total number of words in the filing. It does not consider stop words.
-nword.hits = Number of total hits found in the filing based on the search word list.
+Function returns dataframe containing filing information and the 
+number of word hits based on the input phrases. Additionally, this 
+function saves search information with surrounding content of 
+search keywords in HTML file in directory "Keyword search results".
 }
 \description{
-\code{searchFilings} Search EDGAR filings for specific words
+\code{searchFilings} Search EDGAR filings for specific keywords
 }
 \details{
-searchFilings function takes search word vector, CIK(s), form type(s), and 
+searchFilings function takes search keyword vector, CIK(s), form type(s), and 
 year(s) as input parameters. The function first imports available 
-downloaded filings in local woking directory 
-'Edgar filings' created by \link[edgar]{getFilings} function; otherwise, 
-it downloads the filings which is not already been downloaded.
-It then reads the filings, cleans the filings, and 
-search for the input words. The function returns a dataframe
-with filing information, size of the filing, and the number of word hits.
+downloaded filings in the local woking directory 
+'Edgar filings_full text' created by \link[edgar]{getFilings} function; 
+otherwise, it automatically downloads the filings which are not already been 
+downloaded. It then reads the filings and searches for the input keywords. 
+The function returns a dataframe with filing information and the number of 
+keyword hits. Additionally, it saves the search information with surrounding 
+content of search keywords in HTML format in the new directory 
+"Keyword search results". These HTML view of search results would help the user 
+to analyze the search strategy and identify false positive hits.
 }
 \examples{
 \dontrun{

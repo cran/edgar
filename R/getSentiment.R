@@ -3,12 +3,11 @@
 #' \code{getSentiment} computes sentiment measures of EDGAR filings
 #'
 #' getSentiment function takes CIK(s), form type(s), and year(s) as input parameters.  
-#' The function first imports available downloaded filings in local woking directory 
-#' 'Edgar filings' created by \link[edgar]{getFilings} function; otherwise, 
-#' it downloads the filings which is not already been downloaded.
-#' It then reads the filings, cleans the filings, and 
-#' computes the sentiment measures. The function returns a dataframe
-#' with filing information, and sentiment measures.
+#' The function first imports available downloaded filings in the local working directory 
+#' 'Edgar filings_full text' created by \link[edgar]{getFilings} function; otherwise, 
+#' it automatically downloads the filings which are not already been downloaded.
+#' It then reads, cleans, and computes sentiment measures for these filings. 
+#' The function returns a dataframe with filing information and sentiment measures.
 #' 
 #' @usage getSentiment(cik.no, form.type, filing.year)
 #' 
@@ -27,32 +26,51 @@
 #' compute sentiment measures of a EDGAR filing. Following are the 
 #' definitions of the text characteristics and the sentiment measures:
 #' 
-#' file.size = Total number of words in the filing. It does not consider stop words.
+#' file.size = The filing size of a complete filing on the EDGAR server in 
+#' kilobyte (KB).
 #' 
-#' char.count = Total number of characters in the filing. It does not consider stop words.
+#' word.count = The total number of words in a filing text, excluding HTML 
+#' tags and exhibits text.
 #' 
-#' complex.word.count = Total number of complex words in filing. A word is count 
-#' as a complex word if contains vowels(a, e, i, o, u) more than three times. 
-#' It does not consider stop words. 
+#' unique.word.count = The total number of unique words in a filing text, 
+#' excluding HTML tags and exhibits text.
 #' 
-#' lm.dictionary.count = The number of words that occur in the L&M master dictionary.
+#' stopword.count = The total number of stop words in a filing text, 
+#' excluding exhibits text.
 #' 
-#' lm.negative.count = The number of L&M Financial-Negative words in the filing.
+#' char.count = The total number of characters in a filing text, excluding 
+#' HTML tags and exhibits text.
 #' 
-#' lm.positive.count = The number of L&M Financial-Positive words in the filing.
+#' complex.word.count = The total number of complex words in the filing text. 
+#' When vowels (a, e, i, o, u) occur more than three times in a word, then 
+#' that word is identified as a complex word.
 #' 
-#' lm.strong.modal.count = The number of L&M Financial-Strong Modal words in the filing.
+#' lm.dictionary.count = The number of words in the filing text that occur 
+#' in the Loughran-McDonald (LM) master dictionary.
 #' 
-#' lm.moderate.modal.count = The number of L&M Financial-Moderate Modal words in the filing.
+#' lm.negative.count = The number of LM financial-negative words in the 
+#' document.
 #' 
-#' lm.weak.modal.count = The number of L&M Financial-Weak Modal words in the filing.
+#' lm.positive.count = The number of LM financial-positive words in the 
+#' document.
 #' 
-#' lm.uncertainty.count = The number of L&M Financial-Uncertainty words in the filing.
+#' lm.strong.modal.count = The number of LM financial-strong modal words 
+#' in the document.
 #' 
-#' lm.litigious.count =  The number of L&M Financial-Litigious words in the filing.
+#' lm.moderate.modal.count = The number of LM financial-moderate Modal 
+#' words in the document.
 #' 
-#' harvard.negative.count = Number of words in the filing. that occur in the Harvard 
-#' General Inquirer Negative word list, as defined by L&M. 
+#' lm.weak.modal.count = The number of LM financial-weak modal words in 
+#' the document.
+#' 
+#' lm.uncertainty.count = The number of LM financial-uncertainty words 
+#' in the document.
+#' 
+#' lm.litigious.count = The number of LM financial-litigious words in 
+#' the document.
+#' 
+#' hv.negative.count = The number of words in the document that occur in 
+#' the 'Harvard General Inquirer' Negative word list, as defined by LM. 
 #' 
 #' @examples
 #' \dontrun{
@@ -76,7 +94,7 @@ getSentiment <- function(cik.no, form.type, filing.year) {
       # cat("Please check the CIK number.")
       return()
     }
-    
+   	
     cat("Computing sentiment measures...\n")
     
     # load Loughran & McDonald Master Dictionary and import word lists
@@ -118,11 +136,15 @@ getSentiment <- function(cik.no, form.type, filing.year) {
     }
     
     
+    ## Load LM dictionaries
     lm.dict <- LoadLMDictionary()
 
     progress.bar <- txtProgressBar(min = 0, max = nrow(output), style = 3)
     
     output$file.size <- NA
+    output$word.count <- NA
+    output$unique.word.count <- NA
+    output$stopword.count <- NA
     output$char.count <- NA
     output$complex.word.count  <- NA
     output$lm.dictionary.count <- NA
@@ -133,7 +155,7 @@ getSentiment <- function(cik.no, form.type, filing.year) {
     output$lm.weak.modal.count <- NA
     output$lm.uncertainty.count <- NA
     output$lm.litigious.count <- NA
-    output$harvard.negative.count <- NA
+    output$hv.negative.count <- NA
     
     for (i in 1:nrow(output)) {
         
@@ -146,21 +168,27 @@ getSentiment <- function(cik.no, form.type, filing.year) {
         # Read filing
         filing.text <- readLines(dest.filename)
         
-        # Take data from first <DOCUMENT> to </DOCUMENT>
-        doc.start.line <- (grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1])
-        doc.end.line   <- (grep("</DOCUMENT>", filing.text, ignore.case = TRUE)[1])
+        file.size <- round(file.info(dest.filename)$size/1024, 0)  ## file size in kilobyte (KB)
         
-        if( (!is.na(doc.start.line)) & (!is.na(doc.end.line)) ){
-          filing.text <- filing.text[doc.start.line : doc.end.line]
-        }
+        # Extract data from first <DOCUMENT> to </DOCUMENT>
+        tryCatch({
+          filing.text <- filing.text[(grep("<DOCUMENT>", filing.text, ignore.case = TRUE)[1]):(grep("</DOCUMENT>", 
+                                                                                                    filing.text, ignore.case = TRUE)[1])]
+        }, error = function(e) {
+          filing.text <- filing.text ## In case opening and closing DOCUMENT TAG not found, cosnider full web page
+        })
         
         # See if 10-K is in XLBR or old text format
         if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {
             
-            doc <- XML::htmlParse(filing.text, asText = TRUE)
+            doc <- XML::htmlParse(filing.text, asText = TRUE, useInternalNodes = TRUE, addFinalizer = FALSE)
+			
             f.text <- XML::xpathSApply(doc, "//text()[not(ancestor::script)][not(ancestor::style)][not(ancestor::noscript)][not(ancestor::form)]", 
                 XML::xmlValue)
             f.text <- iconv(f.text, "latin1", "ASCII", sub = " ")
+
+            ## Free up htmlParse document to avoid memory leakage, this calls C function
+            #.Call('RS_XML_forceFreeDoc', doc, package= 'XML')
             
         } else {
             f.text <- filing.text
@@ -169,6 +197,7 @@ getSentiment <- function(cik.no, form.type, filing.year) {
         # Preprocessing the filing text
         f.text <- gsub("\\n|\\t|,", " ", f.text)
         f.text <- paste(f.text, collapse=" ")
+        f.text <- gsub("/s/", "", f.text, fixed = T)
         f.text <- gsub("'s ", "", f.text)
         f.text <- gsub("[[:punct:]]", "", f.text, perl=T)
         f.text <- gsub("[[:digit:]]", "", f.text, perl=T)
@@ -180,9 +209,10 @@ getSentiment <- function(cik.no, form.type, filing.year) {
         text_words <- unlist(strsplit(f.text, " "))
         text_df <- data.frame(word = unlist(text_words), nchar = nchar(text_words))
         text_df <- text_df[text_df$nchar >=3, ]
-        text_df <- text_df[!(text_df$word %in% tm::stopwords("en")), ]
-        file.size <- nrow(text_df)   # Word count
-        char.count <- sum(text_df$nchar)
+        word.count <- nrow(text_df)   # Word count
+        char.count <- sum(text_df$nchar) # Character count
+        stopword.count <- sum(text_df$word %in% tm::stopwords("en")) # Number of stop words
+        unique.word.count <- length(unique(trimws(text_df$word, "both"))) # Number of unique words
         
         # Complex word count
         syllables.counts <- sapply(regmatches(text_df$word, gregexpr("[aeiouy]", 
@@ -216,11 +246,14 @@ getSentiment <- function(cik.no, form.type, filing.year) {
         # Loughran-McDonald litigious word proportion
         lm.litigious.count <-  nrow(text_df[which(text_df$word %in% lm.dict$litigious), ])
         
-        # harvard.negative.count
-        harvard.negative.count <-  nrow(text_df[which(text_df$word %in% lm.dict$harvard.iv), ])
+        # hv.negative.count
+        hv.negative.count <-  nrow(text_df[which(text_df$word %in% lm.dict$harvard.iv), ])
         
         # Assign all the varibles
         output$file.size[i] <- file.size
+        output$word.count[i] <- word.count
+        output$unique.word.count[i] <- unique.word.count
+        output$stopword.count[i] <- stopword.count
         output$char.count[i] <- char.count
         output$complex.word.count [i] <- complex.word.count 
         output$lm.dictionary.count[i] <- lm.dictionary.count
@@ -231,7 +264,7 @@ getSentiment <- function(cik.no, form.type, filing.year) {
         output$lm.weak.modal.count[i] <- lm.weak.modal.count
         output$lm.uncertainty.count[i] <- lm.uncertainty.count
         output$lm.litigious.count[i] <- lm.litigious.count
-        output$harvard.negative.count[i] <- harvard.negative.count
+        output$hv.negative.count[i] <- hv.negative.count
         
         # update progress bar
         setTxtProgressBar(progress.bar, i)
@@ -242,6 +275,7 @@ getSentiment <- function(cik.no, form.type, filing.year) {
     # Close progress bar
     close(progress.bar)
     
+    #names(output)[names(output) == 'status'] <- 'downld.status'
     output$status <- NULL
     output$quarter <- NULL
     output$filing.year <- NULL
