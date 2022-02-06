@@ -107,15 +107,31 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
     return()
   }
   
+  UA <- "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
+  
   # function to download file and return FALSE if download error
-  DownloadSECFile <- function(link, dfile, dmethod, useragent) {
+  DownloadSECFile <- function(link, dfile, dmethod, UA) {
     
     tryCatch({
-      utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
-                           headers = c("User-Agent" = useragent,
-                                       "Accept-Encoding"= "deflate, gzip",
-                                       "Host"= "www.sec.gov"))
-      return(TRUE)
+      ## method 1 
+      # utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
+      #                      headers = c("User-Agent" = useragent,
+      #                                  "Accept-Encoding"= "deflate, gzip",
+      #                                  "Host"= "www.sec.gov"))
+      
+      ## method 2 
+      
+      r <- httr::GET(link, 
+                     httr::add_headers(`Connection` = "keep-alive", `User-Agent` = UA),
+                     httr::write_disk(dfile, overwrite=TRUE)
+      )
+      
+      if(httr::status_code(r)==200){
+        return(TRUE)
+      }else{
+        return(FALSE)
+      }
+      
     }, error = function(e) {
       return(FALSE)
     })
@@ -140,11 +156,11 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
     
     load(filepath)  # Import master Index
     
-    if(form.type == "ALL"){
+    if((length(form.type) == 1) && (form.type == "ALL")){
       form.type <- unique(year.master$form.type)
     }
     
-    if( cik.no == "ALL" ){
+    if( (length(cik.no) == 1) && (cik.no == "ALL" )){
       year.master <- year.master[which(year.master$form.type %in% form.type 
                                        & year.master$quarter %in% quarter), ]
     } else {
@@ -229,7 +245,7 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
         
         while(TRUE){
           
-          res <- DownloadSECFile(edgar.link, dest.filename, dmethod, useragent)
+          res <- DownloadSECFile(edgar.link, dest.filename, dmethod, UA)
           
           if (res){
             
@@ -247,7 +263,7 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
             }else{
               
               index.df$status[i] <- "Download success"
-              
+              Sys.sleep(3)
               break
             }
           }
@@ -259,7 +275,7 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
           }
           
           k = k + 1
-          Sys.sleep(10) ## Wait for multiple of 10 seconds to ease request load on SEC server. 
+          Sys.sleep(6) ## Wait for multiple of 6 seconds to ease request load on SEC server. 
         }
         
       }

@@ -2,7 +2,7 @@
 \alias{LMMasterDictionary}
 \title{Loughran and McDonald Sentiment Master Dictionary}
 \source{
-Website: \url{https://sraf.nd.edu/textual-analysis/resources/}
+Website: \url{https://sraf.nd.edu/loughranmcdonald-master-dictionary/}
 }
 \description{
 The data contains sentiments word lists.

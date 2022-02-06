@@ -25,7 +25,7 @@
 #' @return Function returns dataframe containing CIK number, company name, 
 #' date of filing, accession number, and various sentiment measures. 
 #' This function takes the help of Loughran-McDonald (L&M) sentiment 
-#' dictionaries (https://sraf.nd.edu/textual-analysis/resources/) to 
+#' dictionaries (https://sraf.nd.edu/loughranmcdonald-master-dictionary/) to 
 #' compute sentiment measures of a EDGAR filing. Following are the 
 #' definitions of the text characteristics and the sentiment measures:
 #' 

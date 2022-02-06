@@ -89,16 +89,31 @@ getMasterIndex <- function(filing.year, useragent= "") {
     return()
   }
   
+  UA <- "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
   
   # function to download file and return FALSE if download error
-  DownloadSECFile <- function(link, dfile, dmethod, useragent) {
+  DownloadSECFile <- function(link, dfile, dmethod, UA) {
     
     tryCatch({
-      utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
-                           headers = c("User-Agent" = useragent,
-                                       "Accept-Encoding"= "deflate, gzip",
-                                       "Host"= "www.sec.gov"))
-      return(TRUE)
+      ## method 1 
+      # utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
+      #                      headers = c("User-Agent" = useragent,
+      #                                  "Accept-Encoding"= "deflate, gzip",
+      #                                  "Host"= "www.sec.gov"))
+      
+      ## method 2 
+      
+      r <- httr::GET(link, 
+                httr::add_headers(`Connection` = "keep-alive", `User-Agent` = UA),
+                httr::write_disk(dfile, overwrite=TRUE)
+              )
+      
+      if(httr::status_code(r)==200){
+        return(TRUE)
+      }else{
+        return(FALSE)
+      }
+     
     }, error = function(e) {
       return(FALSE)
     })
@@ -141,7 +156,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
             
             while(TRUE){
 
-              res <- DownloadSECFile(link, dfile, dmethod, useragent)
+              res <- DownloadSECFile(link, dfile, dmethod, UA)
             
               if (res){
                 
@@ -155,7 +170,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
                   }
                   
                 }else{
-                  
+                  Sys.sleep(3)
                   break
                 }
               }
@@ -169,7 +184,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
               }
               
               i = i + 1 
-              Sys.sleep(10) ## Wait for multiple of 10 seconds to ease request load on SEC server. 
+              Sys.sleep(6) ## Wait for multiple of 6 seconds to ease request load on SEC server. 
             }
             
             

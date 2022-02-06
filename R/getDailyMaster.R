@@ -95,13 +95,27 @@ getDailyMaster <- function(input.date, useragent="") {
     
     
     # function to download file and return FALSE if download error
-    DownloadSECFile <- function(link, dfile, dmethod, useragent) {
+    DownloadSECFile <- function(link, dfile, dmethod) {
+      
+      UA <- "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
       
       tryCatch({
-        utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
-                             headers = c("User-Agent" = useragent,
-                                         "Accept-Encoding"= "deflate, gzip",
-                                         "Host"= "www.sec.gov"))
+        # utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
+        #                      headers = c("User-Agent" = useragent,
+        #                                  "Accept-Encoding"= "deflate, gzip",
+        #                                  "Host"= "www.sec.gov"))
+        
+        r <- httr::GET(link, 
+                       httr::add_headers(`Connection` = "keep-alive", `User-Agent` = UA),
+                       httr::write_disk(dfile, overwrite=TRUE)
+        )
+        
+        if(httr::status_code(r)==200){
+          return(TRUE)
+        }else{
+          return(FALSE)
+        }
+        
         return(TRUE)
       }, error = function(e) {
         return(FALSE)
@@ -110,37 +124,15 @@ getDailyMaster <- function(input.date, useragent="") {
     }
     
     
-    DownloadSECFile2 <- function(link, dfile, dmethod, useragent) {
+    DownloadSECFile2 <- function(link, dfile, dmethod) {
 
-      ### Go inside a loop to download
-      i = 1
-      
-      while(TRUE){
-        
-        res <- DownloadSECFile(link, dfile, dmethod, useragent)
-        
-        if (res){
-          
-          if (file.info(dfile)$size < 6000){
-            
-            aa <- readLines(dfile)
-            
-            if(any(grepl("For security purposes, and to ensure that the public service remains available to users, this government computer system", aa)) == FALSE){
-              
-              break
-            }
-            
-          }else{
-            
-            break
-          }
+        res <- DownloadSECFile(link, dfile, dmethod)
+        if(res){
+          return(res)
+        }else{
+          return(FALSE)
         }
-        
-        
-        i = i + 1 
-        Sys.sleep(10) ## Wait for multiple of 10 seconds to ease request load on SEC server. 
-      }
-      return(TRUE)
+      
     }
     
     # function for downloading daily Index
@@ -152,8 +144,9 @@ getDailyMaster <- function(input.date, useragent="") {
         
         filename <- paste0("Daily Indexes/daily_idx_", date)
         
-        link1 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/master.", date, ".idx")
-        
+        link1 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/", year, "/QTR", ceiling(as.integer(month)/3), 
+                        "/master.", date, ".idx")       
+                        
         link2 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/", year, "/QTR", ceiling(as.integer(month)/3), 
             "/master.", date, ".idx")
         
@@ -166,20 +159,20 @@ getDailyMaster <- function(input.date, useragent="") {
         down.success = FALSE
         
         if (year < 1999) {
-          down.success <- DownloadSECFile2(link3, filename, dmethod, useragent)
+          down.success <- DownloadSECFile2(link3, filename, dmethod)
         }
         
         if (year > 1998 && year < 2012) {
-          down.success <- DownloadSECFile2(link4, filename, dmethod, useragent)
+          down.success <- DownloadSECFile2(link4, filename, dmethod)
         }
         
         if (year > 2011) {
-            fun.return1 <- DownloadSECFile2(link1, filename, dmethod, useragent)
+            fun.return1 <- DownloadSECFile2(link1, filename, dmethod)
             if (fun.return1 && file.size(filename) > 500) {
                 down.success = TRUE
                 
             } else {
-                fun.return2 <- DownloadSECFile2(link2, filename, dmethod, useragent)
+                fun.return2 <- DownloadSECFile2(link2, filename, dmethod)
                 if (fun.return2) {
                   down.success = TRUE
                 }
