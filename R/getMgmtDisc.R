@@ -123,6 +123,16 @@ getMgmtDisc <- function(cik.no, filing.year, useragent="" ) {
         dest.filename <- paste0("Edgar filings_full text/Form ", f.type, 
                                 "/", cik, "/", cik, "_", f.type, "_", 
                                 date.filed, "_", accession.number, ".txt")
+								
+		## This is for output Item 7 file path
+		filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
+                            "_", accession.number, ".txt")
+							
+		if(file.exists(filename2)){
+			output$extract.status[i] <- 1
+			next
+		}
+	
         # Read filing
         filing.text <- readLines(dest.filename)
         
@@ -235,8 +245,8 @@ getMgmtDisc <- function(cik.no, filing.year, useragent="" ) {
         }
         
         if( (!is.na(md.dicusssion)) & (words.count>100)){
-          filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
-                              "_", accession.number, ".txt")
+          #filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
+          #                    "_", accession.number, ".txt")
           
           writeLines(md.dicusssion, filename2)
           output$extract.status[i] <- 1

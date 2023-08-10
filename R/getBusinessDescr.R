@@ -122,6 +122,16 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
     dest.filename <- paste0("Edgar filings_full text/Form ", f.type, 
                             "/", cik, "/", cik, "_", f.type, "_", 
                             date.filed, "_", accession.number, ".txt")
+							
+	## This is for output Item 1 file path
+    filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
+                            "_", accession.number, ".txt")
+							
+    if(file.exists(filename2)){
+        output$extract.status[i] <- 1
+        next
+    }
+		
     # Read filing
     filing.text <- readLines(dest.filename)
     
@@ -201,7 +211,8 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
     }
     
     product.descr <- NA
-    
+    words.count <- 0
+	
     if (length(startline) != 0 && length(endline) != 0) {
       
       if (length(startline) == length(endline)) {
@@ -232,10 +243,10 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
       product.descr <- paste0(header, "\n\n\n", product.descr)
       
     }
-    
+    	
     if( (!is.na(product.descr)) & (max(words.count)>100)){
-      filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
-                          "_", accession.number, ".txt")
+      # filename2 <- paste0(new.dir, '/',cik, "_", f.type, "_", date.filed, 
+      #                    "_", accession.number, ".txt")
       
       writeLines(product.descr, filename2)
       output$extract.status[i] <- 1

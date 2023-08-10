@@ -192,7 +192,9 @@ getMasterIndex <- function(filing.year, useragent= "") {
             R.utils::gunzip(dfile, destname = file, temporary = FALSE, skip = FALSE, overwrite = TRUE, remove = FALSE)
             
             # Removing ''' so that scan with '|' not fail due to occurrence of ''' in company name
-            raw.data <- gsub("'", "", readLines(file))
+            raw.data <- readLines(file)
+            raw.data <- iconv(raw.data, "latin1", "ASCII", sub = "")
+            raw.data <- gsub("'", "", raw.data)
             
             # Find line number where header description ends
             header.end <- grep("--------------------------------------------------------", raw.data)

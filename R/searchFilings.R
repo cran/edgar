@@ -85,21 +85,21 @@ searchFilings <- function(cik.no, form.type, filing.year, word.list, useragent =
     #stringr::str_count(text, word)
     occur <- unlist(gregexpr(word, f.text, ignore.case = T))
     
-    if(occur!=-1){
+    if(occur[1]!=-1){
       return(length(occur))  
     } else {
       return(0)
     }
-   
+    
   }
-	
+  
   extract_text <- function (text, word.list){
     
     extract.text.highl <- ""
     
     for(w in 1:length(word.list)){
       word <- word.list[w]
-
+      
       regex_word <- paste0(".{1,255}", word, ".{1,255}")
       extract.text <- regmatches(text, gregexpr(regex_word, text, ignore.case = T))
       extract.text <- unlist(extract.text)
@@ -169,7 +169,7 @@ searchFilings <- function(cik.no, form.type, filing.year, word.list, useragent =
     # f.text <- gsub("[[:digit:]]", "", f.text, perl=T)
     f.text <- iconv(f.text, from = 'UTF-8', to = 'ASCII//TRANSLIT')
     #f.text <- tolower(f.text)
-  
+    
     f.text <- gsub("\\s{2,}", " ", f.text)
     f.text <- gsub(" s ", "'s ", f.text)
     f.text <- gsub("[$ ]{2,}", " $", f.text)

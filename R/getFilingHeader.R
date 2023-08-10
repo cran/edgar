@@ -393,8 +393,7 @@ getFilingHeader <- function(cik.no, form.type, filing.year, useragent="") {
     ## Clean SIC CODE 
     main.output$sic <- gsub("\\", "", main.output$sic, fixed = TRUE)
     main.output$sic <- gsub("'|/|,", "", main.output$sic)
-    main.output$sic <- regmatches(main.output$sic, 
-                                  gregexpr("[[:digit:]]+", main.output$sic))[[1]]
+    main.output$sic <- unlist(regmatches(main.output$sic, gregexpr("[[:digit:]]+", main.output$sic)))
 
     ## convert dates into R datee
     main.output$date.filed <- as.Date(as.character(main.output$date.filed), "%Y-%m-%d")
