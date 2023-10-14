@@ -4,18 +4,16 @@
 \alias{getFilingHeader}
 \title{Scrape EDGAR filing header information}
 \usage{
-getFilingHeader(cik.no, form.type, filing.year, useragent)
+getFilingHeader(cik.no, form.type, filing.year)
 }
 \arguments{
 \item{cik.no}{vector of CIK(s) in integer format. Suppress leading 
-zeroes from CIKs. cik.no = 'ALL' conisders all the CIKs.}
+zeroes from CIKs. cik.no = 'ALL' considers all the CIKs.}
 
 \item{form.type}{character vector containing form type to be downloaded. 
 form.type = 'ALL' if need to download all forms.}
 
 \item{filing.year}{vector of four digit numeric year}
-
-\item{useragent}{Should be in the form of "Your Name Contact@domain.com"}
 }
 \value{
 Function returns dataframe containing CIK number, company name, 
@@ -30,20 +28,21 @@ all the filers in multiple rows.
 }
 \details{
 getFilingHeader function takes CIK(s), form type(s), and year(s) as input parameters.  
-The function first imports available downloaded filings in local woking directory 
-'Edgar filings_full text' created by \link[edgar]{getFilings} function; 
+The function first imports available downloaded filings in local working directory 
+'edgar_Filings' created by \link[edgar]{getFilings} function; 
 otherwise, it automatically downloads the filings which are not already been 
 downloaded. It then parses all the important header information from filings.
-The function returns a dataframe with filing and header information. According 
-to SEC EDGAR's guidelines a user also needs to declare user agent.
+The function returns a dataframe with filing and header information. 
+User must follow the US SEC's fair access policy, i.e. download only what you 
+need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
 }
 \examples{
 \dontrun{
 
 header.df <- getFilingHeader(cik.no = c('1000180', '38079'), 
-                         form.type = '10-K', filing.year = 2006, useragent) 
+                         form.type = '10-K', filing.year = 2006) 
               
 header.df <- getFilingHeader(cik.no = '38079', c('10-K', '10-Q'), 
-                         filing.year = c(2005, 2006), useragent)
+                         filing.year = c(2005, 2006))
 }
 }

@@ -8,41 +8,38 @@
 #' master index files, converts them into dataframe, and 
 #' merges such quarterly dataframes into yearly dataframe, and stores them 
 #' in Rda format. It has ability to download master indexes for multiple years 
-#' based on the user input. This function creates a new directory 'Master Indexes' 
+#' based on the user input. This function creates a new directory 'edgar_MasterIndex' 
 #' into current working directory to save these Rda Master Index. Please note, for 
 #' all other functions in this package need to locate the same working 
-#' directory to access these Rda master index files. According to SEC 
-#' EDGAR's guidelines a user also needs to declare user agent. 
+#' directory to access these Rda master index files. 
+#' User must follow the US SEC's fair access policy, i.e. download only what you 
+#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
 #'     
-#' @usage getMasterIndex(filing.year, useragent)
+#' @usage getMasterIndex(filing.year)
 #'
 #' @param filing.year vector of integer containing filing years.
-#' 
-#' @param useragent Should be in the form of "Your Name Contact@domain.com"
-#' 
+#'  
 #' @return Function downloads quarterly master index files and stores them 
 #' into the mentioned directory.
 #'   
 #' @examples
 #' \dontrun{
-#' 
-#' useragent <- "Your Name Contact@domain.com"
-#' 
-#' getMasterIndex(2006, useragent) 
+#'  
+#' getMasterIndex(2006) 
 #' ## Downloads quarterly master index files for 2006 and 
 #' stores into yearly 2006master.Rda file.
 #' 
-#' getMasterIndex(c(2006, 2008), useragent) 
+#' getMasterIndex(c(2006, 2008)) 
 #' ## Downloads quarterly master index files for 2006 and 2008, and 
 #' stores into 2006master.Rda and 2008master.Rda files.
 #'}
 
-getMasterIndex <- function(filing.year, useragent= "") {
+getMasterIndex <- function(filing.year) {
 
     options(warn = -1)
     
     # Check year validity
-    if (is.na(as.numeric(filing.year))) {
+    if (any(is.na(as.numeric(filing.year)))) {
         cat("Please provide valid year.")
         return()
     }
@@ -66,29 +63,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
     
     return(dmethod)
   }
-  
-  ### Check for valid user agent
-  if(useragent != ""){
-    # Check user agent
-    bb <- any(grepl( "lonare.gunratan@gmail.com|glonare@uncc.edu|bharatspatil@gmail.com",
-                     useragent, ignore.case = T))
     
-    if(bb == TRUE){
-      
-      cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-      return()
-    }
-    
-  }else{
-    
-    cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-    return()
-  }
-  
   UA <- "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
   
   # function to download file and return FALSE if download error
@@ -123,7 +98,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
     ## Check the download compatibility based on OS
     dmethod <- getdownCompat() 
     
-    dir.create("Master Indexes")
+    dir.create("edgar_MasterIndex")
     
     status.array <- data.frame()
     
@@ -145,8 +120,8 @@ getMasterIndex <- function(filing.year, useragent= "") {
         for (quarter in 1:quarterloop) {
             
             # save downloaded file as specific name
-            dfile <- paste0("Master Indexes/", year, "QTR", quarter, "master.gz")
-            file <- paste0("Master Indexes/", year, "QTR", quarter, "master")
+            dfile <- paste0("edgar_MasterIndex/", year, "QTR", quarter, "master.gz")
+            file <- paste0("edgar_MasterIndex/", year, "QTR", quarter, "master")
             
             # form a link to download master file
             link <- paste0("https://www.sec.gov/Archives/edgar/full-index/", year, "/QTR", quarter, "/master.gz")
@@ -170,7 +145,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
                   }
                   
                 }else{
-                  Sys.sleep(3)
+                  Sys.sleep(1)
                   break
                 }
               }
@@ -184,7 +159,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
               }
               
               i = i + 1 
-              Sys.sleep(6) ## Wait for multiple of 6 seconds to ease request load on SEC server. 
+              Sys.sleep(3) ## Wait for multiple of 3 seconds to ease request load on SEC server. 
             }
             
             
@@ -199,7 +174,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
             # Find line number where header description ends
             header.end <- grep("--------------------------------------------------------", raw.data)
             
-            # writting back to storage
+            # writing back to storage
             writeLines(raw.data, file)
             
             scraped.data <- scan(file, what = list("", "", "", "", ""), flush = F, skip = header.end, sep = "|",
@@ -224,7 +199,7 @@ getMasterIndex <- function(filing.year, useragent= "") {
   
         assign(paste0(year, "master"), year.master)
         
-        save(year.master, file = paste0("Master Indexes/", year, "master.Rda"))
+        save(year.master, file = paste0("edgar_MasterIndex/", year, "master.Rda"))
       
     }
     

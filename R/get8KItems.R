@@ -8,61 +8,37 @@
 #' filing information. The function searches and imports existing downloaded 
 #' 8-K filings in the current directory; otherwise it downloads them using 
 #' \link[edgar]{getFilings} function. It then reads the 8-K filings and parses them 
-#' to extract events information. According to SEC EDGAR's guidelines a user also needs to 
-#' declare user agent. 
+#' to extract events information.
+#' User must follow the US SEC's fair access policy, i.e. download only what you 
+#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}. 
 #' 
-#' @usage get8KItems(cik.no, filing.year, useragent)
+#' @usage get8KItems(cik.no, filing.year)
 #' 
 #' @param cik.no vector of CIK(s) in integer format. Suppress leading 
 #' zeroes from CIKs.
 #' 
 #' @param filing.year vector of four digit numeric year
-#' 
-#' @param useragent Should be in the form of "Your Name Contact@domain.com"
-#' 
+#'  
 #' @return Function returns dataframe with Form 8-K events information along with CIK
 #'  number, company name, date of filing, and accession number.
 #'   
 #' @examples
 #' \dontrun{
 #' 
-#' output <- get8KItems(cik.no = 38079, filing.year = 2005, useragent)
+#' output <- get8KItems(cik.no = 38079, filing.year = 2005)
 #' ## Returns 8-K event information for CIK '38079' filed in year 2005.
 #' 
 #' output <- get8KItems(cik.no = c(1000180,38079), 
-#'                      filing.year = c(2005, 2006), useragent) 
+#'                      filing.year = c(2005, 2006)) 
 #'}
 
-get8KItems <- function(cik.no, filing.year, useragent="") {
+get8KItems <- function(cik.no, filing.year) {
     
     f.type <- "8-K"
-    
-    ### Check for valid user agent
-    if(useragent != ""){
-      # Check user agent
-      bb <- any(grepl( "lonare.gunratan@gmail.com|glonare@uncc.edu|bharatspatil@gmail.com",
-                       useragent, ignore.case = T))
       
-      if(bb == TRUE){
-        
-        cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-        return()
-      }
-      
-    }else{
-      
-      cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-      return()
-    }
-    
-    
     ## Download related filings
     output <- getFilings(cik.no = cik.no, form.type = "8-K", filing.year, quarter = c(1, 2, 3, 4), 
-	                     downl.permit = "y", useragent)
+	                     downl.permit = "y")
     
     if(is.null(output)){
       return()
@@ -77,7 +53,7 @@ get8KItems <- function(cik.no, filing.year, useragent="") {
     
     for (i in 1:nrow(output)) {
         
-        dest.filename <- paste0("Edgar filings_full text/Form ", f.type, 
+        dest.filename <- paste0("edgar_Filings/Form ", f.type, 
                               "/", output$cik[i], "/", output$cik[i], "_", f.type, "_", 
                               output$date.filed[i], "_", output$accession.number[i], ".txt")
         

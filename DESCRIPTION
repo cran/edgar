@@ -2,8 +2,8 @@ Package: edgar
 Type: Package
 Title: Tool for the U.S. SEC EDGAR Retrieval and Parsing of Corporate
         Filings
-Version: 2.0.6
-Date: 2023-08-10
+Version: 2.0.7
+Date: 2023-10-14
 Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil
     <bharatspatil@gmail.com>
 Maintainer: Gunratan Lonare <lonare.gunratan@gmail.com>
@@ -25,6 +25,6 @@ Description: In the USA, companies file different forms with the U.S.
 License: GPL-2
 RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2023-08-10 12:56:28 UTC; lonar
+Packaged: 2023-10-14 11:58:01 UTC; lonar
 Repository: CRAN
-Date/Publication: 2023-08-10 13:20:02 UTC
+Date/Publication: 2023-10-14 12:10:02 UTC

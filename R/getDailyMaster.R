@@ -6,29 +6,28 @@
 #' and downloads master index for the date from the U.S. SEC EDGAR server 
 #' \url{https://www.sec.gov/Archives/edgar/daily-index/}. It strips headers 
 #' and converts this daily filing information into dataframe format.
-#' Function creates new directory 'Daily Indexes' into working directory 
-#' to save these downloaded daily master index files in Rda format. According to SEC 
-#' EDGAR's guidelines a user also needs to declare user agent. 
+#' Function creates new directory 'edgar_DailyMaster' into working directory 
+#' to save these downloaded daily master index files in Rda format. 
+#' User must follow the US SEC's fair access policy, i.e. download only what you 
+#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
 #' 
-#' @usage getDailyMaster(input.date, useragent)
+#' @usage getDailyMaster(input.date)
 #' 
 #' @param input.date in character format 'mm/dd/YYYY'.
-#' 
-#' @param useragent Should be in the form of "Your Name Contact@domain.com"
-#' 
+#'  
 #' @return Function returns filings information in a dataframe format.
 #'   
 #' @examples
 #' \dontrun{
 #' 
-#' output <- getDailyMaster('08/09/2016', useragent)
+#' output <- getDailyMaster('08/09/2016')
 #'} 
 
 
-getDailyMaster <- function(input.date, useragent="") {
+getDailyMaster <- function(input.date) {
     
     
-    dir.create("Daily Indexes")
+    dir.create("edgar_DailyMaster")
     
     input.date <- as.Date(input.date, "%m/%d/%Y")
     
@@ -68,31 +67,7 @@ getDailyMaster <- function(input.date, useragent="") {
       }
       
       return(dmethod)
-    }
-    
-    ### Check for valid user agent
-    if(useragent != ""){
-      # Check user agent
-      bb <- any(grepl( "lonare.gunratan@gmail.com|glonare@uncc.edu|bharatspatil@gmail.com",
-                       useragent, ignore.case = T))
-      
-      if(bb == TRUE){
-        
-        cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-        return()
-      }
-      
-    }else{
-      
-      cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-      return()
-    }
-    
-    
+    }    
     
     # function to download file and return FALSE if download error
     DownloadSECFile <- function(link, dfile, dmethod) {
@@ -142,7 +117,7 @@ getDailyMaster <- function(input.date, useragent="") {
       
         date <- paste0(year, month, day)
         
-        filename <- paste0("Daily Indexes/daily_idx_", date)
+        filename <- paste0("edgar_DailyMaster/daily_idx_", date)
         
         link1 <- paste0("https://www.sec.gov/Archives/edgar/daily-index/", year, "/QTR", ceiling(as.integer(month)/3), 
                         "/master.", date, ".idx")       
@@ -183,6 +158,8 @@ getDailyMaster <- function(input.date, useragent="") {
             
             # Removing ''' so that scan with '|' not fail due to occurrence of ''' in company name
             temp.data <- gsub("'", "", readLines(filename))
+			temp.data <- iconv(temp.data, "latin1", "ASCII", sub = "")
+
             # writting back to storage
             writeLines(temp.data, filename)
             

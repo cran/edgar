@@ -9,23 +9,22 @@
 #' via \link[edgar]{getFilings} function; otherwise, it automates the downloading process 
 #' if not already been downloaded. It then reads the downloaded statements, cleans HTML tags, 
 #' and parse the contents. This function automatically creates a new directory with 
-#' the name "Business descriptions text" in the current working directory and 
+#' the name "edgar_BusinDescr" in the current working directory and 
 #' saves scrapped business description sections in this directory. It considers "10-K", 
-#' "10-K405", "10KSB", and "10KSB40" form types as annual statements. According to 
-#' SEC EDGAR's guidelines a user also needs to declare user agent.
-#' 
+#' "10-K405", "10KSB", and "10KSB40" form types as annual statements. 
+#' User must follow the US SEC's fair access policy, i.e. download only what you 
+#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
 #'   
-#' @usage getBusinDescr(cik.no, filing.year, useragent)
+#' @usage getBusinDescr(cik.no, filing.year)
 #' 
 #' @param cik.no vector of firm CIK(s) in integer format. Suppress leading 
-#' zeroes from a CIK number. cik.no = 'ALL' conisders all the CIKs.
+#' zeroes from a CIK number. cik.no = 'ALL' considers all the CIKs.
 #' 
 #' @param filing.year vector of four digit numeric year
 #' 
-#' @param useragent Should be in the form of "Your Name Contact@domain.com"
 #' 
 #' @return Function saves scrapped business description section from annual 
-#' filings in "Business descriptions text" directory created in the current 
+#' filings in "edgar_BusinDescr" directory created in the current 
 #' working directory. The output dataframe contains filing information and 
 #' parsing status. For a successful extraction of this section, 
 #' 'extract.status' column returns 1, other return 0 for failed extraction. 
@@ -33,41 +32,19 @@
 #' @examples
 #' \dontrun{
 #' 
-#' output <- getBusinDescr(cik.no = c(1000180, 38079), filing.year = 2005, useragent)
+#' output <- getBusinDescr(cik.no = c(1000180, 38079), filing.year = 2005)
 #' ## saves scrapped "Item 1" section from 10-K filings for CIKs in 
-#' "Business descriptions text" directory present 
+#' "edgar_BusinDescr" directory present 
 #' in the working directory. Also, it provides filing information in 
 #' the output datframe.
 #' 
 #' output <- getBusinDescr(cik.no = c(1000180, 38079), 
-#'                         filing.year = c(2005, 2006), useragent)
+#'                         filing.year = c(2005, 2006))
 #'}
 
-getBusinDescr <- function(cik.no, filing.year, useragent="") {
+getBusinDescr <- function(cik.no, filing.year) {
   
-  f.type <- c("10-K", "10-K405","10KSB", "10KSB40")
-  
-  ### Check for valid user agent
-  if(useragent != ""){
-    # Check user agent
-    bb <- any(grepl( "lonare.gunratan@gmail.com|glonare@uncc.edu|bharatspatil@gmail.com",
-                     useragent, ignore.case = T))
-    
-    if(bb == TRUE){
-      
-      cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-      return()
-    }
-    
-  }else{
-    
-    cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-    return()
-  }
+  f.type <- c("10-K", "10-K405","10KSB", "10-KSB", "10KSB40")
   
   
   # Check the year validity
@@ -77,7 +54,7 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
   }
   
   output <- getFilings(cik.no = cik.no, form.type = f.type , filing.year, 
-                       quarter = c(1, 2, 3, 4), downl.permit = "y", useragent)
+                       quarter = c(1, 2, 3, 4), downl.permit = "y")
   
   if (is.null(output)){
     cat("No annual statements found for given CIK(s) and year(s).")
@@ -102,7 +79,7 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
     return(text)
   }
     
-  new.dir <- paste0("Business descriptions text")
+  new.dir <- paste0("edgar_BusinDescr")
   dir.create(new.dir)
   
   output$extract.status <- 0
@@ -119,7 +96,7 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
     date.filed <- output$date.filed[i]
     accession.number <- output$accession.number[i]
     
-    dest.filename <- paste0("Edgar filings_full text/Form ", f.type, 
+    dest.filename <- paste0("edgar_Filings/Form ", f.type, 
                             "/", cik, "/", cik, "_", f.type, "_", 
                             date.filed, "_", accession.number, ".txt")
 							
@@ -144,7 +121,7 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
     })
     
     # See if 10-K is in XLBR or old text format
-    if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {
+    if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm|<XBRL>", filing.text, ignore.case = T))) {
       
       doc <- XML::htmlParse(filing.text, asText = TRUE, useInternalNodes = TRUE, addFinalizer = FALSE)
       f.text <- XML::xpathSApply(doc, "//text()[not(ancestor::script)][not(ancestor::style)][not(ancestor::noscript)][not(ancestor::form)]", 
@@ -267,7 +244,7 @@ getBusinDescr <- function(cik.no, filing.year, useragent="") {
   output$filing.year <- NULL
   names(output)[names(output) == 'status'] <- 'downld.status'
   
-  cat("Business descriptions are stored in 'Business descriptions text' directory.")
+  cat("Business descriptions are stored in 'edgar_BusinDescr' directory.")
   
   return(output)
 }

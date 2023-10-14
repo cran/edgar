@@ -4,19 +4,17 @@
 \alias{getMgmtDisc}
 \title{Retrieves management's discussion and analysis section}
 \usage{
-getMgmtDisc(cik.no, filing.year, useragent)
+getMgmtDisc(cik.no, filing.year)
 }
 \arguments{
 \item{cik.no}{vector of firm CIK numbers in integer format. Suppress leading 
 zeroes from CIKs.}
 
 \item{filing.year}{vector of four digit numeric year}
-
-\item{useragent}{Should be in the form of "Your Name Contact@domain.com"}
 }
 \value{
 Function saves scrapped "Item 7" section from annual filings in 
-"MD&A section text" directory present in the working directory. 
+"edgar_MgmtDisc" directory present in the working directory. 
 The output dataframe contains information on CIK number, company name, 
 date of filing, and accession number. For a successful extraction of M&A section, 
 'extract.status' column returns 1, other return 0 for failed extraction.
@@ -32,21 +30,22 @@ a user and provides "Item 7" section extracted from annual statements along with
 filing information. The function imports annual filings downloaded 
 via \link[edgar]{getFilings} function; otherwise, it downloads the filings which are 
 not already been downloaded. It then reads, cleans, and parse the required section 
-from the filings. It creates a new directory with the name "MD&A section text" 
+from the filings. It creates a new directory with the name "edgar_MgmtDisc" 
 in the current working directory to save scrapped "Item 7" sections in text format. 
 It considers "10-K", "10-K405", "10KSB", and "10KSB40" form types as annual statements. 
-According to SEC EDGAR's guidelines a user also needs to declare user agent.
+User must follow the US SEC's fair access policy, i.e. download only what you 
+need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
 }
 \examples{
 \dontrun{
 
-output <- getMgmtDisc(cik.no = c(1000180, 38079), filing.year = 2005, useragent)
+output <- getMgmtDisc(cik.no = c(1000180, 38079), filing.year = 2005)
 
 ## saves scrapped "Item 7" section from 10-K filings for CIKs in 
-"MD&A section text" directory present in the working directory. 
+"edgar_MgmtDisc" directory present in the working directory. 
 Also, it provides filing information in the output datframe.
 
 output <- getMgmtDisc(cik.no = c(1000180, 38079), 
-                      filing.year = c(2005, 2006), useragent)
+                      filing.year = c(2005, 2006))
 }
 }

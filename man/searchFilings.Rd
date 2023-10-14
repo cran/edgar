@@ -4,7 +4,7 @@
 \alias{searchFilings}
 \title{Search EDGAR filings for specific keywords}
 \usage{
-searchFilings(cik.no, form.type, filing.year, word.list, useragent)
+searchFilings(cik.no, form.type, filing.year, word.list)
 }
 \arguments{
 \item{cik.no}{vector of CIK number of firms in integer format. Suppress leading 
@@ -16,14 +16,12 @@ form.type = 'ALL' if need to download all forms.}
 \item{filing.year}{vector of four digit numeric year}
 
 \item{word.list}{vector of words to search in the filing}
-
-\item{useragent}{Should be in the form of "Your Name Contact@domain.com"}
 }
 \value{
 Function returns dataframe containing filing information and the 
 number of word hits based on the input phrases. Additionally, this 
 function saves search information with surrounding content of 
-search keywords in HTML file in directory "Keyword search results".
+search keywords in HTML file in directory "edgar_searchFilings".
 }
 \description{
 \code{searchFilings} Search EDGAR filings for specific keywords
@@ -32,22 +30,23 @@ search keywords in HTML file in directory "Keyword search results".
 searchFilings function takes search keyword vector, CIK(s), form type(s), and 
 year(s) as input parameters. The function first imports available 
 downloaded filings in the local woking directory 
-'Edgar filings_full text' created by \link[edgar]{getFilings} function; 
+'edgar_Filings' created by \link[edgar]{getFilings} function; 
 otherwise, it automatically downloads the filings which are not already been 
 downloaded. It then reads the filings and searches for the input keywords. 
 The function returns a dataframe with filing information and the number of 
 keyword hits. Additionally, it saves the search information with surrounding 
 content of search keywords in HTML format in the new directory 
-"Keyword search results". These HTML view of search results would help the user 
-to analyze the search strategy and identify false positive hits. According 
-to SEC EDGAR's guidelines a user also needs to declare user agent.
+"edgar_searchFilings". These HTML view of search results would help the user 
+to analyze the search strategy and identify false positive hits. 
+User must follow the US SEC's fair access policy, i.e. download only what you 
+need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
 }
 \examples{
 \dontrun{
 
 word.list = c('derivative','hedging','currency forwards','currency futures')
 output <- searchFilings(cik.no = c('1000180', '38079'), 
-                     form.type = c("10-K", "10-K405","10KSB", "10KSB40"), 
-                     filing.year = c(2005, 2006), word.list, useragent) 
+                     form.type = c("10-K", "10-K405","10KSB", "10-KSB", "10KSB40"), 
+                     filing.year = c(2005, 2006), word.list) 
 }
 }

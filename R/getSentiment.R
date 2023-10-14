@@ -4,13 +4,14 @@
 #'
 #' getSentiment function takes CIK(s), form type(s), and year(s) as input parameters.  
 #' The function first imports available downloaded filings in the local working directory 
-#' 'Edgar filings_full text' created by \link[edgar]{getFilings} function; otherwise, 
+#' 'edgar_Filings' created by \link[edgar]{getFilings} function; otherwise, 
 #' it automatically downloads the filings which are not already been downloaded.
 #' It then reads, cleans, and computes sentiment measures for these filings. 
 #' The function returns a dataframe with filing information and sentiment measures.
-#' According to SEC EDGAR's guidelines a user also needs to declare user agent. 
+#' User must follow the US SEC's fair access policy, i.e. download only what you 
+#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
 #' 
-#' @usage getSentiment(cik.no, form.type, filing.year, useragent)
+#' @usage getSentiment(cik.no, form.type, filing.year)
 #' 
 #' @param cik.no vector of CIK number of firms in integer format. Suppress leading 
 #' zeroes from CIKs. Keep cik.no = 'ALL' if needs to download for all CIKs.
@@ -19,9 +20,7 @@
 #' form.type = 'ALL' if need to download all forms.  
 #'
 #' @param filing.year vector of four digit numeric year
-#' 
-#' @param useragent Should be in the form of "Your Name Contact@domain.com"
-#' 
+#'  
 #' @return Function returns dataframe containing CIK number, company name, 
 #' date of filing, accession number, and various sentiment measures. 
 #' This function takes the help of Loughran-McDonald (L&M) sentiment 
@@ -79,43 +78,19 @@
 #' \dontrun{
 #' 
 #' senti.df <- getSentiment(cik.no = c('1000180', '38079'), 
-#'                          form.type = '10-K', filing.year = 2006, useragent) 
+#'                          form.type = '10-K', filing.year = 2006) 
 #'                          
 #' ## Returns dataframe with sentiment measures of firms with CIKs 
 #' 1000180 and 38079 filed in year 2006 for form type '10-K'.
 #' 
 #' senti.df <- getSentiment(cik.no = '38079', form.type = c('10-K', '10-Q'), 
-#'                          filing.year = c(2005, 2006), useragent)
+#'                          filing.year = c(2005, 2006))
 #'}
 
-getSentiment <- function(cik.no, form.type, filing.year, useragent= "") {
-    
-  
-  ### Check for valid user agent
-  if(useragent != ""){
-    # Check user agent
-    bb <- any(grepl( "lonare.gunratan@gmail.com|glonare@uncc.edu|bharatspatil@gmail.com",
-                     useragent, ignore.case = T))
-    
-    if(bb == TRUE){
+getSentiment <- function(cik.no, form.type, filing.year) {
       
-      cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-      return()
-    }
-    
-  }else{
-    
-    cat("Please provide a valid User Agent. 
-      Visit https://www.sec.gov/os/accessing-edgar-data 
-      for more information")
-    return()
-  }
-  
-  
     output <- getFilings(cik.no, form.type, filing.year, quarter = c(1, 2, 3, 4), 
-						 downl.permit = "y", useragent)
+						 downl.permit = "y")
     
     if (is.null(output)){
       # cat("Please check the CIK number.")
@@ -188,7 +163,7 @@ getSentiment <- function(cik.no, form.type, filing.year, useragent= "") {
         
         f.type <- gsub("/", "", output$form.type[i])
 
-        dest.filename <- paste0("Edgar filings_full text/Form ", f.type, 
+        dest.filename <- paste0("edgar_Filings/Form ", f.type, 
                                 "/", output$cik[i], "/", output$cik[i], "_", f.type, "_", 
                                 output$date.filed[i], "_", output$accession.number[i], ".txt")
         
@@ -206,7 +181,7 @@ getSentiment <- function(cik.no, form.type, filing.year, useragent= "") {
         })
         
         # See if 10-K is in XLBR or old text format
-        if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm", filing.text, ignore.case = T))) {
+    if (any(grepl(pattern = "<xml>|<type>xml|<html>|10k.htm|<XBRL>", filing.text, ignore.case = T))) {
             
             doc <- XML::htmlParse(filing.text, asText = TRUE, useInternalNodes = TRUE, addFinalizer = FALSE)
 			
