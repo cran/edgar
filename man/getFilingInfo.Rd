@@ -4,7 +4,7 @@
 \alias{getFilingInfo}
 \title{Retrieves filing information of a firm}
 \usage{
-getFilingInfo(firm.identifier, filing.year, quarter, form.type)
+getFilingInfo(firm.identifier, filing.year, quarter, form.type, useragent)
 }
 \arguments{
 \item{firm.identifier}{CIK of a firm in integer format or full/partial 
@@ -17,6 +17,8 @@ considered as all the quarters, quarter =c(1, 2, 3, 4).}
 
 \item{form.type}{vector of form types in character format. By default, it is kept
 as all the available form types.}
+
+\item{useragent}{Should be in the form of "YourName Contact@domain.com"}
 }
 \value{
 Function returns dataframe with filing information.
@@ -33,18 +35,18 @@ been downloaded in the current working directory. By default, information of all
 the form types filed in all the quarters of the input year by the firm will be 
 provided by this function. 
 User must follow the US SEC's fair access policy, i.e. download only what you 
-need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 }
 \examples{
 \dontrun{
 
 info <- getFilingInfo('United Technologies', c(2005, 2006), 
-                       quarter = c(1,2), form.type = c('8-K','10-K')) 
+                       quarter = c(1,2), form.type = c('8-K','10-K'), useragent) 
 ## Returns filing information on '8-K' and '10-K' filed by the firm 
-in quarter 1 and 2 of year 2005 and 2006.
+## in quarter 1 and 2 of year 2005 and 2006.
 
-info <- getFilingInfo(1067701, 2006) 
+info <- getFilingInfo(1067701, 2006, useragent) 
 ## Returns all the filings information filed by the firm in all 
-the quarters of year 2006.
+## the quarters of year 2006.
 }
 }

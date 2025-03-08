@@ -9,9 +9,9 @@
 #' current working directory. Keep the same current working directory for 
 #' further process. 
 #' User must follow the US SEC's fair access policy, i.e. download only what you 
-#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+#' need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 #' 
-#' @usage getFilings(cik.no, form.type, filing.year, quarter, downl.permit)
+#' @usage getFilings(cik.no, form.type, filing.year, quarter, downl.permit, useragent)
 #'
 #' @param cik.no vector of CIK number of firms in integer format. Suppress leading 
 #' zeroes from CIKs. Keep cik.no = 'ALL' if needs to download for all CIKs.
@@ -21,14 +21,16 @@
 #' 
 #' @param filing.year vector of four digit numeric year
 #' 
-#' @param quarter vector of one digit quarter integer number. By default, it is kept
+#' @param quarter vector of one digit quarter integer number. By deault, it is kept
 #' as c(1 ,2, 3, 4).
 #' 
 #' @param downl.permit "y" or "n". The default value of downl.permit is "n". It 
 #' asks a user permission to download fillings. This permission helps the user 
 #' to decide in case if number of filings are large. Setting downl.permit = "y" 
 #' will not ask for user permission to download filings. 
-#'  
+#' 
+#' @param useragent Should be in the form of "YourName Contact@domain.com"
+#' 
 #' @return Function downloads EDGAR filings and returns download status in dataframe 
 #' format with CIK, company name, form type, date filed, accession number, and 
 #' download status.
@@ -37,16 +39,16 @@
 #' \dontrun{
 #' 
 #' output <- getFilings(cik.no = c(1000180, 38079), c('10-K','10-Q'), 
-#'                      2006, quarter = c(1, 2, 3), downl.permit = "n")
+#'                      2006, quarter = c(1, 2, 3), downl.permit = "n", useragent)
 #'                      
 #' ## download '10-Q' and '10-K' filings filed by the firm with 
-#' CIK = 1000180 in quarters 1,2, and 3 of the year 2006. These 
-#' filings will be stored in the current working directory.
+#' ## CIK = 1000180 in quarters 1,2, and 3 of the year 2006. These 
+#' ## filings will be stored in the current working directory.
 #' 
 #' }
 
 getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter = c(1, 2, 3, 4),
-                       downl.permit = "n") {
+                       downl.permit = "n", useragent= "") {
   
   options(warn = -1)  # remove warnings
   
@@ -84,19 +86,35 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
     return(dmethod)
   }
    
-  UA <- "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
+  ### Check for valid user agent
+  if(useragent != ""){
+    # Check user agent
+    bb <- any(grepl( "lonare.gunratan@gmail.com|glonare@uncc.edu|bharatspatil@gmail.com",
+                     useragent, ignore.case = T))
+    
+    if(bb == TRUE){
+      
+      cat("Please provide a valid User Agent. 
+      Visit https://www.sec.gov/os/accessing-edgar-data 
+      for more information")
+      return()
+    }
+    
+  }else{
+    
+    cat("Please provide a valid User Agent. 
+      Visit https://www.sec.gov/os/accessing-edgar-data 
+      for more information")
+    return()
+  }
+  
+  UA <- paste0("Mozilla/5.0 (", useragent, ")")
+  
   
   # function to download file and return FALSE if download error
   DownloadSECFile <- function(link, dfile, dmethod, UA) {
     
     tryCatch({
-      ## method 1 
-      # utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
-      #                      headers = c("User-Agent" = useragent,
-      #                                  "Accept-Encoding"= "deflate, gzip",
-      #                                  "Host"= "www.sec.gov"))
-      
-      ## method 2 
       
       r <- httr::GET(link, 
                      httr::add_headers(`Connection` = "keep-alive", `User-Agent` = UA),
@@ -128,7 +146,7 @@ getFilings <- function(cik.no = "ALL", form.type = "ALL", filing.year, quarter =
     filepath <- paste0("edgar_MasterIndex/", yr.master)
     
     if (!file.exists(filepath)) {
-      getMasterIndex(year)  # download master index
+      getMasterIndex(year, useragent)  # download master index
     }
     
     load(filepath)  # Import master Index

@@ -13,18 +13,19 @@
 #' in the current working directory to save scrapped "Item 7" sections in text format. 
 #' It considers "10-K", "10-K405", "10KSB", and "10KSB40" form types as annual statements. 
 #' User must follow the US SEC's fair access policy, i.e. download only what you 
-#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+#' need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 #'   
-#' @usage getMgmtDisc(cik.no, filing.year)
+#' @usage getMgmtDisc(cik.no, filing.year, useragent)
 #' 
 #' @param cik.no vector of firm CIK numbers in integer format. Suppress leading 
 #' zeroes from CIKs.
 #' 
 #' @param filing.year vector of four digit numeric year
 #' 
+#' @param useragent Should be in the form of "YourName Contact@domain.com"
 #' 
 #' @return Function saves scrapped "Item 7" section from annual filings in 
-#' "edgar_MgmtDisc" directory present in the working directory. 
+#' "MD&A section text" directory present in the working directory. 
 #' The output dataframe contains information on CIK number, company name, 
 #' date of filing, and accession number. For a successful extraction of M&A section, 
 #' 'extract.status' column returns 1, other return 0 for failed extraction. 
@@ -32,17 +33,17 @@
 #' @examples
 #' \dontrun{
 #' 
-#' output <- getMgmtDisc(cik.no = c(1000180, 38079), filing.year = 2005)
+#' output <- getMgmtDisc(cik.no = c(1000180, 38079), filing.year = 2005, useragent)
 #' 
 #' ## saves scrapped "Item 7" section from 10-K filings for CIKs in 
-#' "edgar_MgmtDisc" directory present in the working directory. 
-#' Also, it provides filing information in the output datframe.
+#' ## "MD&A section text" directory present in the working directory. 
+#' ## Also, it provides filing information in the output datframe.
 #' 
 #' output <- getMgmtDisc(cik.no = c(1000180, 38079), 
-#'                       filing.year = c(2005, 2006))
+#'                       filing.year = c(2005, 2006), useragent)
 #'}
 
-getMgmtDisc <- function(cik.no, filing.year) {
+getMgmtDisc <- function(cik.no, filing.year, useragent="" ) {
   
     f.type <- c("10-K", "10-K405","10KSB", "10-KSB", "10KSB40")
     # 10-K, 10-K405, 10-KSB, 10-KT, 10KSB, 10KSB40, and 10KT405 filings in the EDGAR database
@@ -54,7 +55,7 @@ getMgmtDisc <- function(cik.no, filing.year) {
     }
     
     output <- getFilings(cik.no = cik.no, form.type = f.type , filing.year, 
-						 quarter = c(1, 2, 3, 4), downl.permit = "y")
+						 quarter = c(1, 2, 3, 4), downl.permit = "y", useragent)
     
     if (is.null(output)){
       cat("No annual statements found for given CIK(s) and year(s).")

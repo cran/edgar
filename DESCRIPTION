@@ -2,10 +2,16 @@ Package: edgar
 Type: Package
 Title: Tool for the U.S. SEC EDGAR Retrieval and Parsing of Corporate
         Filings
-Version: 2.0.7
-Date: 2023-10-14
-Author: Gunratan Lonare <lonare.gunratan@gmail.com>, Bharat Patil
-    <bharatspatil@gmail.com>
+Version: 2.0.8
+Date: 2025-03-07
+Authors@R: c(person(given = "Gunratan",
+                    family = "Lonare",
+                    role = c("aut", "cre"),
+                    email = "lonare.gunratan@gmail.com"),
+             person(given = "Bharat",
+                    family = "Patil",
+                    role = "aut",
+                    email = "bharatspatil@gmail.com"))
 Maintainer: Gunratan Lonare <lonare.gunratan@gmail.com>
 Depends: R (>= 3.5.0)
 Imports: R.utils, tm, XML, stringr, stringi, qdapRegex, httr
@@ -23,8 +29,10 @@ Description: In the USA, companies file different forms with the U.S.
     keywords, provides sentiment measures, parses filing header 
     information, and provides HTML view of SEC filings.  
 License: GPL-2
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2023-10-14 11:58:01 UTC; lonar
+Packaged: 2025-03-08 00:44:28 UTC; lonar
+Author: Gunratan Lonare [aut, cre],
+  Bharat Patil [aut]
 Repository: CRAN
-Date/Publication: 2023-10-14 12:10:02 UTC
+Date/Publication: 2025-03-08 01:00:02 UTC

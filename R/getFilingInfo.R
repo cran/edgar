@@ -10,9 +10,9 @@
 #' the form types filed in all the quarters of the input year by the firm will be 
 #' provided by this function. 
 #' User must follow the US SEC's fair access policy, i.e. download only what you 
-#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+#' need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 #' 
-#' @usage getFilingInfo(firm.identifier, filing.year, quarter, form.type)
+#' @usage getFilingInfo(firm.identifier, filing.year, quarter, form.type, useragent)
 #' 
 #' @param firm.identifier CIK of a firm in integer format or full/partial 
 #' name of a firm in character format. Suppress leading zeroes from CIKs.
@@ -24,24 +24,26 @@
 #'
 #' @param form.type vector of form types in character format. By default, it is kept
 #' as all the available form types.
-#'  
+#' 
+#' @param useragent Should be in the form of "YourName Contact@domain.com"
+#' 
 #' @return Function returns dataframe with filing information.
 #'   
 #' @examples
 #' \dontrun{
 #' 
 #' info <- getFilingInfo('United Technologies', c(2005, 2006), 
-#'                        quarter = c(1,2), form.type = c('8-K','10-K')) 
+#'                        quarter = c(1,2), form.type = c('8-K','10-K'), useragent) 
 #' ## Returns filing information on '8-K' and '10-K' filed by the firm 
-#' in quarter 1 and 2 of year 2005 and 2006.
+#' ## in quarter 1 and 2 of year 2005 and 2006.
 #' 
-#' info <- getFilingInfo(1067701, 2006) 
+#' info <- getFilingInfo(1067701, 2006, useragent) 
 #' ## Returns all the filings information filed by the firm in all 
-#' the quarters of year 2006.
+#' ## the quarters of year 2006.
 #'}
 
 getFilingInfo <- function(firm.identifier, filing.year, quarter = c(1, 2, 3, 4),
-                          form.type = "ALL") {
+                          form.type = "ALL", useragent="") {
   
     options(warn = -1)
   
@@ -62,7 +64,7 @@ getFilingInfo <- function(firm.identifier, filing.year, quarter = c(1, 2, 3, 4),
       filepath <- paste0("edgar_MasterIndex/", yr.master)
       
       if (!file.exists(filepath)) {
-        getMasterIndex(year)  # download master index
+        getMasterIndex(year, useragent)  # download master index
       }
       
       load(filepath)  # Import master Index

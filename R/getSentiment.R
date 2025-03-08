@@ -9,9 +9,9 @@
 #' It then reads, cleans, and computes sentiment measures for these filings. 
 #' The function returns a dataframe with filing information and sentiment measures.
 #' User must follow the US SEC's fair access policy, i.e. download only what you 
-#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+#' need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 #' 
-#' @usage getSentiment(cik.no, form.type, filing.year)
+#' @usage getSentiment(cik.no, form.type, filing.year, useragent)
 #' 
 #' @param cik.no vector of CIK number of firms in integer format. Suppress leading 
 #' zeroes from CIKs. Keep cik.no = 'ALL' if needs to download for all CIKs.
@@ -20,6 +20,8 @@
 #' form.type = 'ALL' if need to download all forms.  
 #'
 #' @param filing.year vector of four digit numeric year
+#' 
+#' @param useragent Should be in the form of "YourName Contact@domain.com"
 #'  
 #' @return Function returns dataframe containing CIK number, company name, 
 #' date of filing, accession number, and various sentiment measures. 
@@ -78,19 +80,19 @@
 #' \dontrun{
 #' 
 #' senti.df <- getSentiment(cik.no = c('1000180', '38079'), 
-#'                          form.type = '10-K', filing.year = 2006) 
+#'                          form.type = '10-K', filing.year = 2006, useragent) 
 #'                          
 #' ## Returns dataframe with sentiment measures of firms with CIKs 
-#' 1000180 and 38079 filed in year 2006 for form type '10-K'.
+#' ## 1000180 and 38079 filed in year 2006 for form type '10-K'.
 #' 
 #' senti.df <- getSentiment(cik.no = '38079', form.type = c('10-K', '10-Q'), 
-#'                          filing.year = c(2005, 2006))
+#'                          filing.year = c(2005, 2006), useragent)
 #'}
 
-getSentiment <- function(cik.no, form.type, filing.year) {
+getSentiment <- function(cik.no, form.type, filing.year, useragent= "") {
       
     output <- getFilings(cik.no, form.type, filing.year, quarter = c(1, 2, 3, 4), 
-						 downl.permit = "y")
+						 downl.permit = "y", useragent)
     
     if (is.null(output)){
       # cat("Please check the CIK number.")

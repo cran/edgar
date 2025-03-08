@@ -4,7 +4,7 @@
 #'
 #' getMasterIndex function takes filing year as an input parameter from a user,  
 #' downloads quarterly master indexes from the US SEC server.
-#' \url{https://www.sec.gov/Archives/edgar/full-index/}. It then strips headers from the 
+#' www.sec.gov/Archives/edgar/full-index/. It then strips headers from the 
 #' master index files, converts them into dataframe, and 
 #' merges such quarterly dataframes into yearly dataframe, and stores them 
 #' in Rda format. It has ability to download master indexes for multiple years 
@@ -13,29 +13,33 @@
 #' all other functions in this package need to locate the same working 
 #' directory to access these Rda master index files. 
 #' User must follow the US SEC's fair access policy, i.e. download only what you 
-#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+#' need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 #'     
-#' @usage getMasterIndex(filing.year)
+#' @usage getMasterIndex(filing.year, useragent)
 #'
 #' @param filing.year vector of integer containing filing years.
-#'  
+#' 
+#' @param useragent Should be in the form of "YourName Contact@domain.com"
+#' 
 #' @return Function downloads quarterly master index files and stores them 
 #' into the mentioned directory.
 #'   
 #' @examples
 #' \dontrun{
-#'  
-#' getMasterIndex(2006) 
-#' ## Downloads quarterly master index files for 2006 and 
-#' stores into yearly 2006master.Rda file.
 #' 
-#' getMasterIndex(c(2006, 2008)) 
+#' useragent <- "YourName Contact@domain.com"
+#' 
+#' getMasterIndex(2006, useragent) 
+#' ## Downloads quarterly master index files for 2006 and 
+#' ## stores into yearly 2006master.Rda file.
+#' 
+#' getMasterIndex(c(2006, 2008), useragent) 
 #' ## Downloads quarterly master index files for 2006 and 2008, and 
-#' stores into 2006master.Rda and 2008master.Rda files.
+#' ## stores into 2006master.Rda and 2008master.Rda files.
 #'}
 
-getMasterIndex <- function(filing.year) {
-
+getMasterIndex <- function(filing.year, useragent= "") {
+  
     options(warn = -1)
     
     # Check year validity
@@ -63,21 +67,35 @@ getMasterIndex <- function(filing.year) {
     
     return(dmethod)
   }
+  
+  ### Check for valid user agent
+  if(useragent != ""){
+    # Check user agent
+    bb <- any(grepl( "lonare.gunratan@gmail.com|glonare@uncc.edu|bharatspatil@gmail.com",
+                     useragent, ignore.case = T))
     
-  UA <- "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
+    if(bb == TRUE){
+      
+      cat("Please provide a valid User Agent. 
+      Visit https://www.sec.gov/os/accessing-edgar-data 
+      for more information")
+      return()
+    }
+    
+  }else{
+    
+    cat("Please provide a valid User Agent. 
+      Visit https://www.sec.gov/os/accessing-edgar-data 
+      for more information")
+    return()
+  }
+  
+  UA <- paste0("Mozilla/5.0 (", useragent, ")")
   
   # function to download file and return FALSE if download error
   DownloadSECFile <- function(link, dfile, dmethod, UA) {
     
     tryCatch({
-      ## method 1 
-      # utils::download.file(link, dfile, method = dmethod, quiet = TRUE,
-      #                      headers = c("User-Agent" = useragent,
-      #                                  "Accept-Encoding"= "deflate, gzip",
-      #                                  "Host"= "www.sec.gov"))
-      
-      ## method 2 
-      
       r <- httr::GET(link, 
                 httr::add_headers(`Connection` = "keep-alive", `User-Agent` = UA),
                 httr::write_disk(dfile, overwrite=TRUE)
@@ -127,7 +145,7 @@ getMasterIndex <- function(filing.year) {
             link <- paste0("https://www.sec.gov/Archives/edgar/full-index/", year, "/QTR", quarter, "/master.gz")
             
             ### Go inside a loop to download
-            i = 1
+            count = 1
             
             while(TRUE){
 
@@ -151,14 +169,14 @@ getMasterIndex <- function(filing.year) {
               }
               
               ### If waiting for more than 10*15 seconds, put as server error
-              if(i == 16){
+              if(count == 16){
                 
                 status.array <- rbind(status.array, data.frame(Filename = paste0(year, ": quarter-", quarter),
                                                                status = "Server Error"))
                 break
               }
               
-              i = i + 1 
+              count = count + 1 
               Sys.sleep(3) ## Wait for multiple of 3 seconds to ease request load on SEC server. 
             }
             

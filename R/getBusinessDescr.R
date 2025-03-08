@@ -13,18 +13,19 @@
 #' saves scrapped business description sections in this directory. It considers "10-K", 
 #' "10-K405", "10KSB", and "10KSB40" form types as annual statements. 
 #' User must follow the US SEC's fair access policy, i.e. download only what you 
-#' need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+#' need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 #'   
-#' @usage getBusinDescr(cik.no, filing.year)
+#' @usage getBusinDescr(cik.no, filing.year, useragent)
 #' 
 #' @param cik.no vector of firm CIK(s) in integer format. Suppress leading 
-#' zeroes from a CIK number. cik.no = 'ALL' considers all the CIKs.
+#' zeroes from a CIK number. cik.no = 'ALL' conisders all the CIKs.
 #' 
 #' @param filing.year vector of four digit numeric year
 #' 
+#' @param useragent Should be in the form of "YourName Contact@domain.com"
 #' 
 #' @return Function saves scrapped business description section from annual 
-#' filings in "edgar_BusinDescr" directory created in the current 
+#' filings in "Business descriptions text" directory created in the current 
 #' working directory. The output dataframe contains filing information and 
 #' parsing status. For a successful extraction of this section, 
 #' 'extract.status' column returns 1, other return 0 for failed extraction. 
@@ -32,19 +33,41 @@
 #' @examples
 #' \dontrun{
 #' 
-#' output <- getBusinDescr(cik.no = c(1000180, 38079), filing.year = 2005)
+#' output <- getBusinDescr(cik.no = c(1000180, 38079), filing.year = 2005, useragent)
 #' ## saves scrapped "Item 1" section from 10-K filings for CIKs in 
-#' "edgar_BusinDescr" directory present 
-#' in the working directory. Also, it provides filing information in 
-#' the output datframe.
+#' ## "Business descriptions text" directory present 
+#' ## in the working directory. Also, it provides filing information in 
+#' ## the output datframe.
 #' 
 #' output <- getBusinDescr(cik.no = c(1000180, 38079), 
-#'                         filing.year = c(2005, 2006))
+#'                         filing.year = c(2005, 2006), useragent)
 #'}
 
-getBusinDescr <- function(cik.no, filing.year) {
+getBusinDescr <- function(cik.no, filing.year, useragent="") {
   
   f.type <- c("10-K", "10-K405","10KSB", "10-KSB", "10KSB40")
+  
+  ### Check for valid user agent
+  if(useragent != ""){
+    # Check user agent
+    bb <- any(grepl( "lonare.gunratan@gmail.com|bharatspatil@gmail.com",
+                     useragent, ignore.case = T))
+    
+    if(bb == TRUE){
+      
+      cat("Please provide a valid User Agent. 
+      Visit https://www.sec.gov/os/accessing-edgar-data 
+      for more information")
+      return()
+    }
+    
+  }else{
+    
+    cat("Please provide a valid User Agent. 
+      Visit https://www.sec.gov/os/accessing-edgar-data 
+      for more information")
+    return()
+  }
   
   
   # Check the year validity
@@ -54,7 +77,7 @@ getBusinDescr <- function(cik.no, filing.year) {
   }
   
   output <- getFilings(cik.no = cik.no, form.type = f.type , filing.year, 
-                       quarter = c(1, 2, 3, 4), downl.permit = "y")
+                       quarter = c(1, 2, 3, 4), downl.permit = "y", useragent)
   
   if (is.null(output)){
     cat("No annual statements found for given CIK(s) and year(s).")
@@ -68,7 +91,7 @@ getBusinDescr <- function(cik.no, filing.year) {
   # Function for text cleaning
   CleanFiling2 <- function(text) {
     
-    text <- gsub("[[:digit:]]+", "", text)  ## remove Alphnumerics
+    text <- gsub("[[:digit:]]+", "", text)  ## remove Alphanumerical
     
     text <- gsub("\\s{1,}", " ", text)
     

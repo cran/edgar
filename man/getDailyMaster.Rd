@@ -4,10 +4,12 @@
 \alias{getDailyMaster}
 \title{Retrieves daily master index}
 \usage{
-getDailyMaster(input.date)
+getDailyMaster(input.date, useragent)
 }
 \arguments{
 \item{input.date}{in character format 'mm/dd/YYYY'.}
+
+\item{useragent}{Should be in the form of "YourName Contact@domain.com"}
 }
 \value{
 Function returns filings information in a dataframe format.
@@ -18,16 +20,16 @@ Function returns filings information in a dataframe format.
 \details{
 getDailyMaster function takes date as an input parameter from a user,  
 and downloads master index for the date from the U.S. SEC EDGAR server 
-\url{https://www.sec.gov/Archives/edgar/daily-index/}. It strips headers 
+www.sec.gov/Archives/edgar/daily-index/. It strips headers 
 and converts this daily filing information into dataframe format.
 Function creates new directory 'edgar_DailyMaster' into working directory 
 to save these downloaded daily master index files in Rda format. 
 User must follow the US SEC's fair access policy, i.e. download only what you 
-need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 }
 \examples{
 \dontrun{
 
-output <- getDailyMaster('08/09/2016')
+output <- getDailyMaster('08/09/2016', useragent)
 } 
 }

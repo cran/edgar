@@ -4,7 +4,7 @@
 \alias{getFilings}
 \title{Retrieves EDGAR filings from SEC server}
 \usage{
-getFilings(cik.no, form.type, filing.year, quarter, downl.permit)
+getFilings(cik.no, form.type, filing.year, quarter, downl.permit, useragent)
 }
 \arguments{
 \item{cik.no}{vector of CIK number of firms in integer format. Suppress leading 
@@ -15,13 +15,15 @@ form.type = 'ALL' if need to download all forms.}
 
 \item{filing.year}{vector of four digit numeric year}
 
-\item{quarter}{vector of one digit quarter integer number. By default, it is kept
+\item{quarter}{vector of one digit quarter integer number. By deault, it is kept
 as c(1 ,2, 3, 4).}
 
 \item{downl.permit}{"y" or "n". The default value of downl.permit is "n". It 
 asks a user permission to download fillings. This permission helps the user 
 to decide in case if number of filings are large. Setting downl.permit = "y" 
 will not ask for user permission to download filings.}
+
+\item{useragent}{Should be in the form of "YourName Contact@domain.com"}
 }
 \value{
 Function downloads EDGAR filings and returns download status in dataframe 
@@ -39,17 +41,17 @@ store all downloaded filings. All the filings will be stored in the
 current working directory. Keep the same current working directory for 
 further process. 
 User must follow the US SEC's fair access policy, i.e. download only what you 
-need and limit your request rates, see \url{https://www.sec.gov/os/accessing-edgar-data}.
+need and limit your request rates, see www.sec.gov/os/accessing-edgar-data.
 }
 \examples{
 \dontrun{
 
 output <- getFilings(cik.no = c(1000180, 38079), c('10-K','10-Q'), 
-                     2006, quarter = c(1, 2, 3), downl.permit = "n")
+                     2006, quarter = c(1, 2, 3), downl.permit = "n", useragent)
                      
 ## download '10-Q' and '10-K' filings filed by the firm with 
-CIK = 1000180 in quarters 1,2, and 3 of the year 2006. These 
-filings will be stored in the current working directory.
+## CIK = 1000180 in quarters 1,2, and 3 of the year 2006. These 
+## filings will be stored in the current working directory.
 
 }
 }
